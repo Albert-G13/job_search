@@ -1,0 +1,10 @@
+package kg.attractor.job_search.model;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class RespondedApplicant {
+    private boolean confirmation;
+}
