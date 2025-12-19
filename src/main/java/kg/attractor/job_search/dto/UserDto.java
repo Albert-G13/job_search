@@ -1,11 +1,9 @@
-package kg.attractor.job_search.model;
+package kg.attractor.job_search.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-public class User {
+@Data
+public class UserDto {
     private Integer id;
     private String name;
     private String surname;
