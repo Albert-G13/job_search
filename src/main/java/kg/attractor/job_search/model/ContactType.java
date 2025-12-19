@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class ContactType {
     private Integer id;
-    private String type;
+    private String contactType;
 }
