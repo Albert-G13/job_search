@@ -2,6 +2,7 @@ package kg.attractor.job_search.dao;
 
 import kg.attractor.job_search.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -33,5 +35,13 @@ public class UserDao {
     public List<User> getAllUsers() {
         String sql = "SELECT * FROM users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+    }
+    public Optional<User> getUserById(Long id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(
+                        jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id)
+                )
+        );
     }
 }

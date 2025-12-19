@@ -2,6 +2,7 @@ package kg.attractor.job_search.service.impl;
 
 import kg.attractor.job_search.dao.UserDao;
 import kg.attractor.job_search.dto.UserDto;
+import kg.attractor.job_search.exceptions.UserNotFoundException;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,23 @@ public class UserServiceImpl implements UserService {
             userDtos.add(userDto);
         });
         return userDtos;
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        User user = userDao.getUserById(id)
+                .orElseThrow(UserNotFoundException::new);
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setName(user.getName());
+        userDto.setSurname(user.getSurname());
+        userDto.setAge(user.getAge());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setAvatar(user.getAvatar());
+        userDto.setAccountType(user.getAccountType());
+        return userDto;
     }
 
 }
