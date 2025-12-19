@@ -19,67 +19,19 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public List<VacancyDto> getAllVacancies() {
         List<Vacancy> vacancies = vacancyDao.getAllVacancies();
-        List<VacancyDto> vacancyDtos = new ArrayList<>();
-        vacancies.forEach(vacancy -> {
-            VacancyDto vacancyDto = new VacancyDto();
-            vacancyDto.setId(vacancy.getId());
-            vacancyDto.setCategoryId(vacancy.getCategoryId());
-            vacancyDto.setAuthorId(vacancy.getAuthorId());
-            vacancyDto.setName(vacancy.getName());
-            vacancyDto.setDescription(vacancy.getDescription());
-            vacancyDto.setSalary(vacancy.getSalary());
-            vacancyDto.setExpFrom(vacancy.getExpFrom());
-            vacancyDto.setExpTo(vacancy.getExpTo());
-            vacancyDto.setActive(vacancy.isActive());
-            vacancyDto.setCreatedDate(vacancy.getCreatedDate());
-            vacancyDto.setUpdateTime(vacancy.getUpdateTime());
-            vacancyDtos.add(vacancyDto);
-        });
-        return vacancyDtos;
+        return convertToDtos(vacancies);
     }
 
     @Override
     public List<VacancyDto> getVacanciesByRespondedId(Integer applicantId) {
         List<Vacancy> vacancies = vacancyDao.getVacanciesByRespondedId(applicantId);
-        List<VacancyDto> vacancyDtos = new ArrayList<>();
-        vacancies.forEach(vacancy -> {
-            VacancyDto vacancyDto = new VacancyDto();
-            vacancyDto.setId(vacancy.getId());
-            vacancyDto.setCategoryId(vacancy.getCategoryId());
-            vacancyDto.setAuthorId(vacancy.getAuthorId());
-            vacancyDto.setName(vacancy.getName());
-            vacancyDto.setDescription(vacancy.getDescription());
-            vacancyDto.setSalary(vacancy.getSalary());
-            vacancyDto.setExpFrom(vacancy.getExpFrom());
-            vacancyDto.setExpTo(vacancy.getExpTo());
-            vacancyDto.setActive(vacancy.isActive());
-            vacancyDto.setCreatedDate(vacancy.getCreatedDate());
-            vacancyDto.setUpdateTime(vacancy.getUpdateTime());
-            vacancyDtos.add(vacancyDto);
-        });
-        return vacancyDtos;
+        return convertToDtos(vacancies);
     }
 
     @Override
     public List<VacancyDto> getVacanciesByCategoryId(Integer categoryId) {
         List<Vacancy> vacancies = vacancyDao.getVacanciesByCategoryId(categoryId);
-        List<VacancyDto> vacancyDtos = new ArrayList<>();
-        vacancies.forEach(vacancy -> {
-            VacancyDto vacancyDto = new VacancyDto();
-            vacancyDto.setId(vacancy.getId());
-            vacancyDto.setCategoryId(vacancy.getCategoryId());
-            vacancyDto.setAuthorId(vacancy.getAuthorId());
-            vacancyDto.setName(vacancy.getName());
-            vacancyDto.setDescription(vacancy.getDescription());
-            vacancyDto.setSalary(vacancy.getSalary());
-            vacancyDto.setExpFrom(vacancy.getExpFrom());
-            vacancyDto.setExpTo(vacancy.getExpTo());
-            vacancyDto.setActive(vacancy.isActive());
-            vacancyDto.setCreatedDate(vacancy.getCreatedDate());
-            vacancyDto.setUpdateTime(vacancy.getUpdateTime());
-            vacancyDtos.add(vacancyDto);
-    });
-        return vacancyDtos;
+        return convertToDtos(vacancies);
     }
     @Override
     public List<UserDto> getRespondedApplicantsByVacancyId(Integer vacancyId) {
@@ -99,5 +51,25 @@ public class VacancyServiceImpl implements VacancyService {
             userDtos.add(userDto);
         });
         return userDtos;
+    }
+
+    private List<VacancyDto> convertToDtos(List<Vacancy> vacancies) {
+        List<VacancyDto> vacancyDtos = new ArrayList<>();
+        vacancies.forEach(vacancy -> {
+            VacancyDto vacancyDto = new VacancyDto();
+            vacancyDto.setId(vacancy.getId());
+            vacancyDto.setCategoryId(vacancy.getCategoryId());
+            vacancyDto.setAuthorId(vacancy.getAuthorId());
+            vacancyDto.setName(vacancy.getName());
+            vacancyDto.setDescription(vacancy.getDescription());
+            vacancyDto.setSalary(vacancy.getSalary());
+            vacancyDto.setExpFrom(vacancy.getExpFrom());
+            vacancyDto.setExpTo(vacancy.getExpTo());
+            vacancyDto.setActive(vacancy.isActive());
+            vacancyDto.setCreatedDate(vacancy.getCreatedDate());
+            vacancyDto.setUpdateTime(vacancy.getUpdateTime());
+            vacancyDtos.add(vacancyDto);
+        });
+        return vacancyDtos;
     }
 }
