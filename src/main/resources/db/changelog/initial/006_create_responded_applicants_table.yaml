@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 06_create_responded_applicants_table
+      author: albert g.
+      changes:
+        - createTable:
+            tableName: responded_applicants
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: confirmation
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: resume_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_responded_applicants_resume_id
+                    references: resumes(id)
+                    deleteCascade: true
+              - column:
+                  name: vacancy_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_responded_applicants_vacancy_id
+                    references: vacancies(id)
+                    deleteCascade: true

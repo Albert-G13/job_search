@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 08_create_contact_info_table
+      author: Albert G.
+      changes:
+        - createTable:
+            tableName: contacts_info
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: contact_value
+                  type: varchar(255)
+              - column:
+                  name: type_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_contacts_info_type_id
+                    references: contact_types(id)
+                    deleteCascade: true
+              - column:
+                  name: resume_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_contacts_info_resume_id
+                    references: resumes(id)
+                    deleteCascade: true

@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 05_create_resume_table
+      author: Albert G.
+      changes:
+        - createTable:
+            tableName: resumes
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+              - column:
+                  name: salary
+                  type: real
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+              - column:
+                  name: created_date
+                  type: timestamp
+              - column:
+                  name: update_time
+                  type: timestamp
+              - column:
+                  name: applicant_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_resumes_applicant_id
+                    references: users_table(id)
+                    deleteCascade: true
+              - column:
+                  name: category_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_resumes_category_id
+                    references: categories(id)
+                    deleteCascade: true

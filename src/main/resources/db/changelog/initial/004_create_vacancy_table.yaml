@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 04_create_vacancy_table
+      author: Albert G.
+      changes:
+        - createTable:
+            tableName: vacancies
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: salary
+                  type: real
+              - column:
+                  name: exp_from
+                  type: int
+              - column:
+                  name: exp_to
+                  type: int
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+              - column:
+                  name: created_date
+                  type: timestamp
+              - column:
+                  name: update_time
+                  type: timestamp
+              - column:
+                  name: category_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_salary_category_id
+                    references: categories(id)
+                    deleteCascade: true
+              - column:
+                  name: author_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_salary_author_id
+                    references: users_table(id)
+                    deleteCascade: true

@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07_create_table_messages
+      author: Albert G.
+      changes:
+        - createTable:
+            tableName: messages
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: content
+                  type: varchar(255)
+              - column:
+                  name: timestamp
+                  type: timestamp
+              - column:
+                  name: responded_applicants_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_messages_responded_applicants_id
+                    references: responded_applicants(id)
+                    deleteCascade: true
