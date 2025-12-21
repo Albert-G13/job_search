@@ -17,46 +17,22 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public List<ResumeDto> getList(Integer id) {
         List<Resume> resumes = resumeDao.getList(id);
-        List<ResumeDto> resumeDtos = new ArrayList<>();
-        resumes.forEach(resume -> {
-            ResumeDto resumeDto = new ResumeDto();
-            resumeDto.setId(resume.getId());
-            resumeDto.setApplicantId(resume.getApplicantId());
-            resumeDto.setCategoryId(resume.getCategoryId());
-            resumeDto.setName(resume.getName());
-            resumeDto.setSalary(resume.getSalary());
-            resumeDto.setActive(resume.isActive());
-            resumeDto.setCreatedDate(resume.getCreatedDate());
-            resumeDto.setUpdateTime(resume.getUpdateTime());
-            resumeDtos.add(resumeDto);
-        });
-
-        return resumeDtos;
+        return convertToDtos(resumes);
     }
 
     @Override
     public List<ResumeDto> getListByApplicantId(Integer id) {
         List<Resume> resumes = resumeDao.getListByApplicantId(id);
-        List<ResumeDto> resumeDtos = new ArrayList<>();
-        resumes.forEach(resume -> {
-            ResumeDto resumeDto = new ResumeDto();
-            resumeDto.setId(resume.getId());
-            resumeDto.setApplicantId(resume.getApplicantId());
-            resumeDto.setCategoryId(resume.getCategoryId());
-            resumeDto.setName(resume.getName());
-            resumeDto.setSalary(resume.getSalary());
-            resumeDto.setActive(resume.isActive());
-            resumeDto.setCreatedDate(resume.getCreatedDate());
-            resumeDto.setUpdateTime(resume.getUpdateTime());
-            resumeDtos.add(resumeDto);
-        });
-
-        return resumeDtos;
+        return convertToDtos(resumes);
     }
 
     @Override
     public List<ResumeDto> getAllResumes() {
         List<Resume> resumes = resumeDao.getAllResumes();
+        return convertToDtos(resumes);
+    }
+
+    private List<ResumeDto> convertToDtos(List<Resume> resumes) {
         List<ResumeDto> resumeDtos = new ArrayList<>();
         resumes.forEach(resume -> {
             ResumeDto resumeDto = new ResumeDto();
@@ -70,7 +46,6 @@ public class ResumeServiceImpl implements ResumeService {
             resumeDto.setUpdateTime(resume.getUpdateTime());
             resumeDtos.add(resumeDto);
         });
-
         return resumeDtos;
     }
 }

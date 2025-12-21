@@ -32,7 +32,7 @@ public class VacancyDao {
     }
     public List<User> getRespondedApplicantsByVacancyId(Integer vacancyId) {
         String sql = "SELECT u.* " +
-                "FROM users u " +
+                "FROM USERS_TABLE u " +
                 "JOIN resumes r ON r.applicant_id = u.id " +
                 "JOIN responded_applicants ra ON ra.resume_id = r.id " +
                 "WHERE ra.vacancy_id = ?";

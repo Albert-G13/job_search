@@ -18,6 +18,10 @@ public class UserController {
     public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
     @GetMapping("/search")
     public List<UserDto> searchUsers(@RequestParam(required = false) String name,
                                      @RequestParam(required = false) String phoneNumber,
