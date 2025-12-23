@@ -3,6 +3,8 @@ package kg.attractor.job_search.dto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 public class ResumeDto {
     private Integer id;
@@ -13,4 +15,7 @@ public class ResumeDto {
     private boolean isActive;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
+
+    private List<EducationInfoDto> education;
+    private List<WorkExperienceInfoDto> workExperience;
 }

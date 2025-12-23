@@ -10,4 +10,14 @@ public interface ResumeService {
     List<ResumeDto> getListByApplicantId(Integer id);
 
     List<ResumeDto> getAllResumes();
+
+    ResumeDto getById(Integer id);
+
+    ResumeDto create(ResumeDto resumeDto);
+
+    void delete(Integer id);
+
+    ResumeDto edit(Integer id, ResumeDto resumeDto);
+
+    void update(Integer id, ResumeDto resumeDto);
 }

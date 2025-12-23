@@ -36,7 +36,7 @@ public class UserDao {
         String sql = "SELECT * FROM USERS_TABLE";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(Integer id) {
         String sql = "SELECT * FROM USERS_TABLE WHERE id = ?";
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(

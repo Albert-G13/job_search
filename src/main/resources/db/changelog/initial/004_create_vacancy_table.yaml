@@ -42,13 +42,13 @@ databaseChangeLog:
                   name: category_id
                   type: int
                   constraints:
-                    foreignKeyName: fk_salary_category_id
+                    foreignKeyName: fk_vacancy_category_id
                     references: categories(id)
                     deleteCascade: true
               - column:
                   name: author_id
                   type: int
                   constraints:
-                    foreignKeyName: fk_salary_author_id
+                    foreignKeyName: fk_vacancy_author_id
                     references: users_table(id)
                     deleteCascade: true
