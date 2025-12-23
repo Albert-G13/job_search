@@ -3,12 +3,14 @@ package kg.attractor.job_search.service.impl;
 import kg.attractor.job_search.dao.VacancyDao;
 import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.VacancyDto;
+import kg.attractor.job_search.exceptions.VacancyNotFoundException;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.model.Vacancy;
 import kg.attractor.job_search.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +55,39 @@ public class VacancyServiceImpl implements VacancyService {
         return userDtos;
     }
 
+    @Override
+    public VacancyDto getById(Integer id) {
+        Vacancy vacancy = vacancyDao.getById(id)
+                .orElseThrow(VacancyNotFoundException::new);
+        return convertToDto(vacancy);
+    }
+
+    @Override
+    public void edit(Integer id, VacancyDto vacancyDto) {
+        Vacancy vacancy = vacancyDao.getById(id)
+                .orElseThrow(VacancyNotFoundException::new);
+        vacancyDto.setUpdateTime(LocalDateTime.now());
+        vacancyDao.edit(id,vacancyDto);
+    }
+
+    @Override
+    public Integer create(VacancyDto vacancyDto) {
+        vacancyDto.setCreatedDate(LocalDateTime.now());
+        vacancyDto.setUpdateTime(LocalDateTime.now());
+        return vacancyDao.create(vacancyDto);
+    }
+
+    public void delete(Integer id) {
+        Vacancy vacancy = vacancyDao.getById(id)
+                .orElseThrow(VacancyNotFoundException::new);
+        vacancyDao.deleteById(id);
+    }
+
+    @Override
+    public void update(Integer id, VacancyDto vacancyDto) {
+        vacancyDto.setUpdateTime(LocalDateTime.now());
+    }
+
     private List<VacancyDto> convertToDtos(List<Vacancy> vacancies) {
         List<VacancyDto> vacancyDtos = new ArrayList<>();
         vacancies.forEach(vacancy -> {
@@ -67,9 +102,24 @@ public class VacancyServiceImpl implements VacancyService {
             vacancyDto.setExpTo(vacancy.getExpTo());
             vacancyDto.setActive(vacancy.isActive());
             vacancyDto.setCreatedDate(vacancy.getCreatedDate());
-            vacancyDto.setUpdateTime(vacancy.getUpdateTime());
+            vacancyDto.setUpdateTime(vacancy.getCreatedDate());
             vacancyDtos.add(vacancyDto);
         });
         return vacancyDtos;
+    }
+    private VacancyDto convertToDto(Vacancy vacancy) {
+        VacancyDto vacancyDto = new VacancyDto();
+        vacancyDto.setId(vacancy.getId());
+        vacancyDto.setCategoryId(vacancy.getCategoryId());
+        vacancyDto.setAuthorId(vacancy.getAuthorId());
+        vacancyDto.setName(vacancy.getName());
+        vacancyDto.setDescription(vacancy.getDescription());
+        vacancyDto.setSalary(vacancy.getSalary());
+        vacancyDto.setExpFrom(vacancy.getExpFrom());
+        vacancyDto.setExpTo(vacancy.getExpTo());
+        vacancyDto.setActive(vacancy.isActive());
+        vacancyDto.setCreatedDate(vacancy.getCreatedDate());
+        vacancyDto.setUpdateTime(vacancy.getUpdateTime());
+        return vacancyDto;
     }
 }

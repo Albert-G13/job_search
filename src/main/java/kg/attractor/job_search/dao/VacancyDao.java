@@ -1,18 +1,29 @@
 package kg.attractor.job_search.dao;
 
+import kg.attractor.job_search.dto.VacancyDto;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.model.Vacancy;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class VacancyDao {
     private final JdbcTemplate jdbcTemplate;
+    private final KeyHolder keyHolder = new GeneratedKeyHolder();
 
     public List<Vacancy> getVacanciesByRespondedId(Integer applicantId) {
         String sql = "SELECT v.* " +
@@ -27,7 +38,7 @@ public class VacancyDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class));
     }
     public List<Vacancy> getVacanciesByCategoryId(Integer categoryId) {
-        String sql = "SELECT * FROM vacancies WHERE category_id = ?";
+        String sql = "SELECT * FROM vacancies WHERE CATEGORY_ID = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), categoryId);
     }
     public List<User> getRespondedApplicantsByVacancyId(Integer vacancyId) {
@@ -39,4 +50,72 @@ public class VacancyDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), vacancyId);
     }
 
+    public Optional<Vacancy> getById(Integer id) {
+        String sql = "SELECT * FROM VACANCIES WHERE ID = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(
+                        jdbcTemplate.query(
+                                sql,
+                                new BeanPropertyRowMapper<>(Vacancy.class),
+                                id
+                        )
+                )
+        );
+    }
+
+    public Integer create(VacancyDto vacancyDto) {
+        String sql = "INSERT INTO VACANCIES (" +
+                "NAME, " +
+                "DESCRIPTION, " +
+                "SALARY, " +
+                "EXP_FROM, " +
+                "EXP_TO, " +
+                "CREATED_DATE, " +
+                "UPDATE_TIME, " +
+                "CATEGORY_ID, " +
+                "AUTHOR_ID)" +
+                "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(com -> {
+            PreparedStatement ps = com.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, vacancyDto.getName());
+            ps.setString(2, vacancyDto.getDescription());
+            ps.setFloat(3, vacancyDto.getSalary());
+            ps.setInt(4, vacancyDto.getExpFrom());
+            ps.setInt(5, vacancyDto.getExpTo());
+            ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setTimestamp(7, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setInt(8, vacancyDto.getCategoryId());
+            ps.setInt(9, vacancyDto.getAuthorId());
+            return ps;
+        }, keyHolder);
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
+    }
+
+    public void edit(Integer id,VacancyDto vacancyDto) {
+        String sql = "UPDATE VACANCIES SET " +
+                "NAME = ?, " +
+                "DESCRIPTION = ?, " +
+                "SALARY = ?, " +
+                "EXP_FROM = ?, " +
+                "EXP_TO = ?, " +
+                "IS_ACTIVE = ?," +
+                "CATEGORY_ID = ?," +
+                "UPDATE_TIME = ?" +
+                "WHERE ID = ?";
+        jdbcTemplate.update(sql,
+                vacancyDto.getName(),
+                vacancyDto.getDescription(),
+                vacancyDto.getSalary(),
+                vacancyDto.getExpFrom(),
+                vacancyDto.getExpTo(),
+                vacancyDto.isActive(),
+                vacancyDto.getCategoryId(),
+                Timestamp.valueOf(LocalDateTime.now()),
+                id
+                );
+    }
+    public void deleteById(Integer id) {
+        String sql = "DELETE FROM VACANCIES WHERE ID = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }
