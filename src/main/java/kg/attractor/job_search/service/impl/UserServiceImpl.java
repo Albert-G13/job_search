@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Long id) {
+    public UserDto getUserById(Integer id) {
         User user = userDao.getUserById(id)
                 .orElseThrow(UserNotFoundException::new);
         return convertToDto(user);
