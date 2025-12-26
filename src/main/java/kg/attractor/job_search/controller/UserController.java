@@ -1,8 +1,10 @@
 package kg.attractor.job_search.controller;
 
+import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,10 @@ public class UserController {
     @GetMapping
     public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
+    }
+    @PostMapping
+    public HttpStatus createUser(@RequestBody @Valid UserDto userDto){
+        return userService.create(userDto);
     }
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Integer id) {

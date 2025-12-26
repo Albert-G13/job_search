@@ -1,6 +1,7 @@
 package kg.attractor.job_search.controller;
 
 
+import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.ImageDto;
 import kg.attractor.job_search.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class ImageController {
     }
 
     @PostMapping
-    public HttpStatus create(ImageDto imageDto){
+    public HttpStatus create(@ModelAttribute @Valid ImageDto imageDto){
         imageService.create(imageDto);
         return HttpStatus.CREATED;
     }
