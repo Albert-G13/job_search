@@ -6,6 +6,7 @@ import kg.attractor.job_search.exceptions.UserNotFoundException;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,6 +40,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
         return convertToDto(user);
     }
+
+    @Override
+    public HttpStatus create(UserDto userDto) {
+
+        return userDao.create(userDto);
+    }
+
     private List<UserDto> convertToDtos(List<User> users) {
         List<UserDto> userDtos = new ArrayList<>();
         users.forEach(user -> {

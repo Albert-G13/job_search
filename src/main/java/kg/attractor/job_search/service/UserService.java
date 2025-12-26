@@ -1,6 +1,7 @@
 package kg.attractor.job_search.service;
 
 import kg.attractor.job_search.dto.UserDto;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     UserDto getUserById(Integer id);
+
+    HttpStatus create(UserDto userDto);
 }
