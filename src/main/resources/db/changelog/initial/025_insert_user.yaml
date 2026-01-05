@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 025_insert_user
+      author: Albert G.
+      changes:
+        - sql:
+#            dbms: any
+            sql: |
+              insert into users_table(email, name, password, enabled, role_id)
+              VALUES (
+                'qwe@qwe.qwe', 
+                'qwe', 
+                '$2a$12$WB2YUbFcCN0tm44SBcKUjua9yiFBsfB3vW02IjuwzY7HGtlQIKzy2', 
+                TRUE,
+                (select id from roles where role = 'EMPLOYER')
+              ),
+              (
+                'qwerty@qwerty.qwerty', 
+                'qwe', 
+                '$2a$12$WB2YUbFcCN0tm44SBcKUjua9yiFBsfB3vW02IjuwzY7HGtlQIKzy2', 
+                TRUE,
+                (select id from roles where role = 'APPLICANT')
+              ),
+              (
+                'ewq@ewq.com',
+                'ewq',
+                '$2a$12$WB2YUbFcCN0tm44SBcKUjua9yiFBsfB3vW02IjuwzY7HGtlQIKzy2',
+                TRUE,
+                (select id from roles where role = 'GUEST')
+              )

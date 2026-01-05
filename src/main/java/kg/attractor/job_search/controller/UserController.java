@@ -2,6 +2,7 @@ package kg.attractor.job_search.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.UserDto;
+import kg.attractor.job_search.dto.UserEditDto;
 import kg.attractor.job_search.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class UserController {
     public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
-    @PostMapping
+    @PostMapping("/register")
     public HttpStatus createUser(@RequestBody @Valid UserDto userDto){
         return userService.create(userDto);
     }
@@ -37,6 +38,11 @@ public class UserController {
     @GetMapping("/exists")
     public boolean existsByEmail(@RequestParam String email){
         return userService.existsByEmail(email);
+    }
+    @PutMapping("/{id}")
+    public HttpStatus editUser(@PathVariable Integer id, @RequestBody @Valid UserEditDto userEditDto){
+        userService.edit(id, userEditDto);
+        return HttpStatus.ACCEPTED;
     }
 
 }

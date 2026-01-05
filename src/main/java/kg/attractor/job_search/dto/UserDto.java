@@ -1,9 +1,15 @@
 package kg.attractor.job_search.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserDto {
     private Integer id;
     @NotBlank
@@ -35,4 +41,5 @@ public class UserDto {
     private String phoneNumber;
     private String avatar;
     private String accountType;
+
 }

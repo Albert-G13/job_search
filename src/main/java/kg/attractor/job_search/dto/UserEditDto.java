@@ -1,14 +1,15 @@
-package kg.attractor.job_search.model;
+package kg.attractor.job_search.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class User {
-    private Integer id;
+public class UserEditDto {
     private String name;
     private String surname;
     private Integer age;
@@ -16,5 +17,5 @@ public class User {
     private String password;
     private String phoneNumber;
     private String avatar;
-    private String accountType;
 }
+

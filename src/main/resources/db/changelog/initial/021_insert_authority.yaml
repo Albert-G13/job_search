@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 021_insert_authority
+      author: Albert G.
+      changes:
+        - sql:
+#            dbms: any
+            comment: Insert data into authority
+            sql: |
+              insert into authorities (authority)
+              values('NORMAL'), ('READ_ONLY');

@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 024_modify_user_table
+      author: Albert G.
+      changes:
+        - addColumn:
+            tableName: users_table
+            columns:
+              - column:
+                  name: enabled
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: long
+                  defaultValue: 1
+                  constraints:
+                    foreignKeyName: fk_role_id
+                    nullable: false
+                    references: roles(id)

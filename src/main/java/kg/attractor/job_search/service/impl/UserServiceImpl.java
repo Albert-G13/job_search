@@ -2,14 +2,16 @@ package kg.attractor.job_search.service.impl;
 
 import kg.attractor.job_search.dao.UserDao;
 import kg.attractor.job_search.dto.UserDto;
+import kg.attractor.job_search.dto.UserEditDto;
 import kg.attractor.job_search.exceptions.UserNotFoundException;
+import kg.attractor.job_search.exceptions.VacancyNotFoundException;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,20 +27,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> searchUsers(String name, String phoneNumber, String email) {
         List<User> users = userDao.searchUsers(name, phoneNumber, email);
-        return convertToDtos(users);
+        return users.stream().map(this::convertUserToDto).toList();
     }
 
     @Override
     public List<UserDto> getAllUsers() {
         List<User> users = userDao.getAllUsers();
-        return convertToDtos(users);
+        return users.stream().map(this::convertUserToDto).toList();
     }
 
     @Override
     public UserDto getUserById(Integer id) {
         User user = userDao.getUserById(id)
                 .orElseThrow(UserNotFoundException::new);
-        return convertToDto(user);
+        return convertUserToDto(user);
     }
 
     @Override
@@ -47,36 +49,48 @@ public class UserServiceImpl implements UserService {
         return userDao.create(userDto);
     }
 
-    private List<UserDto> convertToDtos(List<User> users) {
-        List<UserDto> userDtos = new ArrayList<>();
-        users.forEach(user -> {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setName(user.getName());
-            userDto.setSurname(user.getSurname());
-            userDto.setAge(user.getAge());
-            userDto.setEmail(user.getEmail());
-            userDto.setPassword(user.getPassword());
-            userDto.setPhoneNumber(user.getPhoneNumber());
-            userDto.setAvatar(user.getAvatar());
-            userDto.setAccountType(user.getAccountType());
-            userDtos.add(userDto);
-        });
-        return userDtos;
+    @Override
+    public void edit(Integer id, UserEditDto userEditDto) {
+        User user = userDao.getUserById(id)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (userEditDto.getName() != null && !userEditDto.getName().isBlank()) {
+            user.setName(userEditDto.getName());
+        }
+        if (user.getSurname() != null && !userEditDto.getSurname().isBlank()) {
+            user.setSurname(userEditDto.getSurname());
+        }
+        if (userEditDto.getAge() != null && userEditDto.getAge() >= 14 && userEditDto.getAge() <= 100) {
+            user.setAge(userEditDto.getAge());
+        }
+        if (userEditDto.getEmail() != null && !userEditDto.getEmail().isBlank()) {
+            user.setEmail(userEditDto.getEmail());
+        }
+        if (userEditDto.getPassword() != null && !userEditDto.getPassword().isBlank()) {
+            user.setPassword(userEditDto.getPassword());
+        }
+        if (userEditDto.getPhoneNumber() != null && !userEditDto.getPhoneNumber().isBlank()) {
+            user.setPhoneNumber(userEditDto.getPhoneNumber());
+        }
+        if (userEditDto.getAvatar() != null) {
+            user.setAvatar(userEditDto.getAvatar());
+        }
+
+        userDao.edit(user);
     }
 
-    private UserDto convertToDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setName(user.getName());
-        userDto.setSurname(user.getSurname());
-        userDto.setAge(user.getAge());
-        userDto.setEmail(user.getEmail());
-        userDto.setPassword(user.getPassword());
-        userDto.setPhoneNumber(user.getPhoneNumber());
-        userDto.setAvatar(user.getAvatar());
-        userDto.setAccountType(user.getAccountType());
-        return userDto;
-    }
 
+    private UserDto convertUserToDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .age(user.getAge())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .phoneNumber(user.getPhoneNumber())
+                .avatar(user.getAvatar())
+                .accountType(user.getAccountType())
+                .build();
+    }
 }
