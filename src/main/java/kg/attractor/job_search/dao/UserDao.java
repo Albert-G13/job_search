@@ -77,4 +77,25 @@ public class UserDao {
         }, keyHolder);
         return HttpStatus.CREATED;
     }
+
+    public void edit(User user) {
+        String sql = "UPDATE USERS_TABLE SET " +
+                "NAME = ?, " +
+                "SURNAME = ?, " +
+                "AGE = ?, " +
+                "EMAIL = ?, " +
+                "PASSWORD = ?, " +
+                "PHONE_NUMBER = ?, " +
+                "AVATAR = ?" +
+                "WHERE ID = ?";
+        jdbcTemplate.update(sql,
+                user.getName(),
+                user.getSurname(),
+                user.getAge(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getAvatar(),
+                user.getId()
+        );
+    }
 }
