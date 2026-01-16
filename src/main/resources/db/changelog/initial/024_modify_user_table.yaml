@@ -15,8 +15,6 @@ databaseChangeLog:
               - column:
                   name: role_id
                   type: long
-                  defaultValue: 1
                   constraints:
                     foreignKeyName: fk_role_id
-                    nullable: false
                     references: roles(id)

@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 027
+      author: Albert G.
+      changes:
+        - addNotNullConstraint:
+            tableName: users_table
+            columnName: role_id
+            columnDataType: INT

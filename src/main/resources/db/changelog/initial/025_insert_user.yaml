@@ -26,5 +26,5 @@ databaseChangeLog:
                 'ewq',
                 '$2a$12$WB2YUbFcCN0tm44SBcKUjua9yiFBsfB3vW02IjuwzY7HGtlQIKzy2',
                 TRUE,
-                (select id from roles where role = 'GUEST')
+                (select id from roles where role = 'APPLICANT')
               )

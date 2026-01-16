@@ -15,7 +15,6 @@ public class VacancyDto {
     private Integer id;
     @NotNull
     private Integer categoryId;
-    @NotNull
     private Integer authorId;
     @NotBlank
     @Size(min = 3, max = 100)

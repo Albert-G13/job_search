@@ -7,18 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class UserDto {
-    private Integer id;
-    @NotBlank
-    private String name;
-    @NotBlank
-    private String surname;
-    @Min(value = 14, message = "Age must be at least 14")
-    @Max(value = 100, message = "Age must be less than 100")
-    private Integer age;
+public class UserRegisterDto {
+
     @NotBlank
     @Email
     private String email;
@@ -39,10 +32,7 @@ public class UserDto {
     )
     @Pattern(regexp = "^(\\d)", message = "Should contain only digits")
     private String phoneNumber;
-    private String avatar;
-    @NotNull(message = "RoleId is required")
+    @NotNull
     private Integer roleId;
-    private String role;
-    private boolean enabled;
-
 }
+

@@ -1,6 +1,7 @@
 package kg.attractor.job_search.dao;
 
 import kg.attractor.job_search.dto.EducationInfoDto;
+import kg.attractor.job_search.model.EducationInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +14,7 @@ import java.util.List;
 public class EducationInfoDao {
     private final JdbcTemplate jdbcTemplate;
 
-    public void create(EducationInfoDto educationInfoDto) {
+    public void create(EducationInfo educationInfo) {
         String sql = "INSERT INTO EDUCATION_INFO (" +
                 "INSTITUTION, " +
                 "PROGRAM, " +
@@ -23,12 +24,12 @@ public class EducationInfoDao {
                 "RESUME_ID) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
-                educationInfoDto.getInstitution(),
-                educationInfoDto.getProgram(),
-                educationInfoDto.getStartDate(),
-                educationInfoDto.getEndDate(),
-                educationInfoDto.getDegree(),
-                educationInfoDto.getResumeId());
+                educationInfo.getInstitution(),
+                educationInfo.getProgram(),
+                educationInfo.getStartDate(),
+                educationInfo.getEndDate(),
+                educationInfo.getDegree(),
+                educationInfo.getResumeId());
     }
     public void deleteByResumeId(Integer resumeId) {
         String sql = "DELETE FROM EDUCATION_INFO WHERE RESUME_ID = ?";

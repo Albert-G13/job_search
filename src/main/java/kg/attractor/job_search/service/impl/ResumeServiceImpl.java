@@ -1,9 +1,13 @@
 package kg.attractor.job_search.service.impl;
 
+import kg.attractor.job_search.dao.CategoryDao;
 import kg.attractor.job_search.dao.ResumeDao;
+import kg.attractor.job_search.dao.UserDao;
 import kg.attractor.job_search.dto.ResumeDto;
+import kg.attractor.job_search.dto.ResumeEditDto;
 import kg.attractor.job_search.exceptions.ResumeNotFoundException;
 import kg.attractor.job_search.model.Resume;
+import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
+    private final UserDao userDao;
+    private final CategoryDao categoryDao;
     @Override
     public List<ResumeDto> getList(Integer id) {
         List<Resume> resumes = resumeDao.getList(id);
@@ -40,7 +46,19 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ResumeDto create(ResumeDto resumeDto) {
+    public ResumeDto create(ResumeDto resumeDto, Integer applicantId) {
+
+        User user = userDao.getUserById(applicantId)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+
+        if (!"APPLICANT".equals(user.getRole())) {
+            throw new IllegalStateException("Только соискатель может создавать резюме");
+        }
+
+        if (!categoryDao.existsById(resumeDto.getCategoryId())) {
+            throw new IllegalArgumentException("Категория не найдена");
+        }
+
         Resume resume = new Resume();
         resume.setName(resumeDto.getName());
         resume.setSalary(resumeDto.getSalary());
@@ -52,14 +70,30 @@ public class ResumeServiceImpl implements ResumeService {
         return convertToResumeDto(resume);
     }
 
-    public ResumeDto edit(Integer resumeId, ResumeDto resumeDto) {
+    public ResumeDto edit(Integer resumeId, ResumeEditDto resumeDto) {
         Resume resume = resumeDao.getById(resumeId)
                 .orElseThrow(ResumeNotFoundException::new);
 
-        if(resumeDto.getName() != null && !resumeDto.getName().isBlank()) resume.setName(resumeDto.getName());
-        if(resumeDto.getSalary() > 0) resume.setSalary(resumeDto.getSalary());
-        if(resumeDto.getCategoryId() != null) resume.setCategoryId(resumeDto.getCategoryId());
+        if (resumeDto.getName() != null && !resumeDto.getName().isBlank()) {
+            resume.setName(resumeDto.getName());
+        }
 
+        if (resumeDto.getSalary() != null && resumeDto.getSalary() > 0) {
+            resume.setSalary(resumeDto.getSalary());
+        }
+
+        if (resumeDto.getCategoryId() != null) {
+            if (!categoryDao.existsById(resumeDto.getCategoryId())) {
+                throw new IllegalArgumentException("Категория не найдена");
+            }
+            resume.setCategoryId(resumeDto.getCategoryId());
+        }
+
+        if (resumeDto.getIsActive() != null) {
+            resume.setActive(resumeDto.getIsActive());
+        }
+
+        resume.setUpdateTime(LocalDateTime.now());
         resumeDao.edit(resume);
         return convertToResumeDto(resume);
     }

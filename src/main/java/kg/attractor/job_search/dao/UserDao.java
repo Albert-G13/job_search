@@ -1,10 +1,8 @@
 package kg.attractor.job_search.dao;
 
-import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -25,6 +23,41 @@ public class UserDao {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final KeyHolder keyHolder = new GeneratedKeyHolder();
 
+    public Optional<User> findByEmail(String email) {
+        String sql = """
+        SELECT u.*, r.role
+        FROM users_table u
+        JOIN roles r ON u.role_id = r.id
+        WHERE u.email = ?
+    """;
+
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(
+                        jdbcTemplate.query(
+                                sql,
+                                new BeanPropertyRowMapper<>(User.class),
+                                email
+                        )
+                )
+        );
+    }
+
+    public void register(User user) {
+        String sql = """
+        INSERT INTO users_table (email, password, phone_number, role_id, enabled)
+        VALUES (?,?,?,?,?)
+        """;
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getPhoneNumber());
+            ps.setInt(4, user.getRoleId());
+            ps.setBoolean(5, user.isEnabled());
+            return ps;
+        }, keyHolder);
+    }
+
     public boolean existsByEmail(String email) {
         String sql = "SELECT EXISTS (SELECT * FROM USERS_TABLE WHERE email = ?)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, email));
@@ -44,7 +77,12 @@ public class UserDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
     public Optional<User> getUserById(Integer id) {
-        String sql = "SELECT * FROM USERS_TABLE WHERE id = ?";
+        String sql = """
+        SELECT u.*, r.role
+        FROM users_table u
+        JOIN roles r ON u.role_id = r.id
+        WHERE u.id = ?
+    """;
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(
                         jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id)
@@ -52,7 +90,7 @@ public class UserDao {
         );
     }
 
-    public HttpStatus create(UserDto userDto) {
+    public void create(User user) {
         String sql = "INSERT INTO USERS_TABLE (" +
                 "NAME, " +
                 "SURNAME, " +
@@ -61,41 +99,37 @@ public class UserDao {
                 "PASSWORD, " +
                 "PHONE_NUMBER, " +
                 "AVATAR, " +
-                "ACCOUNT_TYPE)" +
+                "ROLE_ID) " +
                 "VALUES (?,?,?,?,?,?,?,?) ";
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, userDto.getName());
-            ps.setString(2, userDto.getSurname());
-            ps.setInt(3, userDto.getAge());
-            ps.setString(4, userDto.getEmail());
-            ps.setString(5, userDto.getPassword());
-            ps.setString(6, userDto.getPhoneNumber());
-            ps.setString(6, userDto.getAvatar());
-            ps.setString(7, userDto.getAccountType());
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getSurname());
+            ps.setInt(3, user.getAge());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, user.getPassword());
+            ps.setString(6, user.getPhoneNumber());
+            ps.setString(7, user.getAvatar());
+            ps.setInt(8, user.getRoleId());
             return ps;
         }, keyHolder);
-        return HttpStatus.CREATED;
     }
 
     public void edit(User user) {
         String sql = "UPDATE USERS_TABLE SET " +
-                "NAME = ?, " +
-                "SURNAME = ?, " +
-                "AGE = ?, " +
-                "EMAIL = ?, " +
-                "PASSWORD = ?, " +
-                "PHONE_NUMBER = ?, " +
-                "AVATAR = ?" +
+                "NAME = ?, SURNAME = ?, AGE = ?, EMAIL = ?, PASSWORD = ?, PHONE_NUMBER = ?, AVATAR = ?, ROLE_ID = ? " +
                 "WHERE ID = ?";
         jdbcTemplate.update(sql,
                 user.getName(),
                 user.getSurname(),
                 user.getAge(),
                 user.getEmail(),
+                user.getPassword(),
                 user.getPhoneNumber(),
                 user.getAvatar(),
+                user.getRoleId(),
                 user.getId()
         );
     }
+
 }

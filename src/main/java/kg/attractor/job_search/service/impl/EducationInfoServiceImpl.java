@@ -2,6 +2,7 @@ package kg.attractor.job_search.service.impl;
 
 import kg.attractor.job_search.dao.EducationInfoDao;
 import kg.attractor.job_search.dto.EducationInfoDto;
+import kg.attractor.job_search.model.EducationInfo;
 import kg.attractor.job_search.service.EducationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,16 @@ public class EducationInfoServiceImpl implements EducationService {
 
     @Override
     public EducationInfoDto create(EducationInfoDto educationInfoDto){
-        educationInfoDao.create(educationInfoDto);
+        EducationInfo educationInfo = EducationInfo
+                .builder()
+                .degree(educationInfoDto.getDegree())
+                .program(educationInfoDto.getProgram())
+                .endDate(educationInfoDto.getEndDate())
+                .institution(educationInfoDto.getInstitution())
+                .startDate(educationInfoDto.getStartDate())
+                .resumeId(educationInfoDto.getResumeId())
+                .build();
+        educationInfoDao.create(educationInfo);
         return educationInfoDto;
     }
     @Override

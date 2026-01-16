@@ -4,10 +4,8 @@ databaseChangeLog:
       author: Albert G.
       changes:
         - sql:
-#            dbms: any
             comment: Insert data into roles
             sql: |
               insert into roles(role, authority_id)
               values ('APPLICANT', (select id from authorities where authority = 'NORMAL')),
-              ('EMPLOYER', (select id from authorities where authority = 'NORMAL')),
-                ('GUEST', (select id from authorities where authority = 'READ_ONLY'));
+              ('EMPLOYER', (select id from authorities where authority = 'NORMAL'))

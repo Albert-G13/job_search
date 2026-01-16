@@ -1,8 +1,11 @@
 package kg.attractor.job_search.service.impl;
 
+import kg.attractor.job_search.dao.CategoryDao;
+import kg.attractor.job_search.dao.UserDao;
 import kg.attractor.job_search.dao.VacancyDao;
 import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.VacancyDto;
+import kg.attractor.job_search.dto.VacancyUpdateDto;
 import kg.attractor.job_search.exceptions.VacancyNotFoundException;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.model.Vacancy;
@@ -18,6 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VacancyServiceImpl implements VacancyService {
     private final VacancyDao vacancyDao;
+    private final UserDao userDao;
+    private final CategoryDao categoryDao;
+
     @Override
     public List<VacancyDto> getAllVacancies() {
         List<Vacancy> vacancies = vacancyDao.getAllVacancies();
@@ -49,7 +55,7 @@ public class VacancyServiceImpl implements VacancyService {
             userDto.setPassword(user.getPassword());
             userDto.setPhoneNumber(user.getPhoneNumber());
             userDto.setAvatar(user.getAvatar());
-            userDto.setAccountType(user.getAccountType());
+            userDto.setRoleId(user.getRoleId());
             userDtos.add(userDto);
         });
         return userDtos;
@@ -63,17 +69,45 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public void edit(Integer id, VacancyDto vacancyDto) {
-        vacancyDao.getById(id)
+    public void edit(Integer id, VacancyUpdateDto vacancyDto) {
+        Vacancy vacancy = vacancyDao.getById(id)
                 .orElseThrow(VacancyNotFoundException::new);
-        vacancyDto.setUpdateTime(LocalDateTime.now());
-        vacancyDao.edit(id,vacancyDto);
+
+        if (vacancyDto.getName() != null) vacancy.setName(vacancyDto.getName());
+        if (vacancyDto.getDescription() != null) vacancy.setDescription(vacancyDto.getDescription());
+        if (vacancyDto.getSalary() != null) vacancy.setSalary(vacancyDto.getSalary());
+        if (vacancyDto.getExpFrom() != null) vacancy.setExpFrom(vacancyDto.getExpFrom());
+        if (vacancyDto.getExpTo() != null) vacancy.setExpTo(vacancyDto.getExpTo());
+        if (vacancyDto.getIsActive() != null) vacancy.setActive(vacancyDto.getIsActive());
+        if (vacancyDto.getCategoryId() != null) vacancy.setCategoryId(vacancyDto.getCategoryId());
+
+        vacancy.setUpdateTime(LocalDateTime.now());
+
+        vacancyDao.edit(vacancy);
     }
 
     @Override
-    public Integer create(VacancyDto vacancyDto) {
+    public Integer create(VacancyDto vacancyDto, Integer authorId) {
+
+        User user = userDao.getUserById(authorId)
+                .orElseThrow(() -> new IllegalArgumentException("Автор не найден"));
+
+        if (!"EMPLOYER".equals(user.getRole())){
+            throw new IllegalStateException("Только работодатель может создавать вакансии");
+        }
+
+        if (!categoryDao.existsById(vacancyDto.getCategoryId())){
+            throw new IllegalArgumentException("Категория не найдена");
+        }
+
+        if (vacancyDto.getExpFrom() > vacancyDto.getExpTo()) {
+            throw new IllegalArgumentException("Начало работы не может быть больше конца работы");
+        }
+
+        vacancyDto.setAuthorId(authorId);
         vacancyDto.setCreatedDate(LocalDateTime.now());
         vacancyDto.setUpdateTime(LocalDateTime.now());
+        vacancyDto.setActive(true);
         return vacancyDao.create(vacancyDto);
     }
 
