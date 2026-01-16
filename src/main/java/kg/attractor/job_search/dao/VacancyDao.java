@@ -91,28 +91,31 @@ public class VacancyDao {
         return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
-    public void edit(Integer id,VacancyDto vacancyDto) {
-        String sql = "UPDATE VACANCIES SET " +
-                "NAME = ?, " +
-                "DESCRIPTION = ?, " +
-                "SALARY = ?, " +
-                "EXP_FROM = ?, " +
-                "EXP_TO = ?, " +
-                "IS_ACTIVE = ?," +
-                "CATEGORY_ID = ?," +
-                "UPDATE_TIME = ?" +
-                "WHERE ID = ?";
+    public void edit(Vacancy vacancy) {
+        String sql = """
+        UPDATE vacancies SET
+        name = ?,
+        description = ?,
+        salary = ?,
+        exp_from = ?,
+        exp_to = ?,
+        is_active = ?,
+        category_id = ?,
+        update_time = ?
+        WHERE id = ?
+    """;
+
         jdbcTemplate.update(sql,
-                vacancyDto.getName(),
-                vacancyDto.getDescription(),
-                vacancyDto.getSalary(),
-                vacancyDto.getExpFrom(),
-                vacancyDto.getExpTo(),
-                vacancyDto.isActive(),
-                vacancyDto.getCategoryId(),
-                Timestamp.valueOf(LocalDateTime.now()),
-                id
-                );
+                vacancy.getName(),
+                vacancy.getDescription(),
+                vacancy.getSalary(),
+                vacancy.getExpFrom(),
+                vacancy.getExpTo(),
+                vacancy.isActive(),
+                vacancy.getCategoryId(),
+                Timestamp.valueOf(vacancy.getUpdateTime()),
+                vacancy.getId()
+        );
     }
     public void deleteById(Integer id) {
         String sql = "DELETE FROM VACANCIES WHERE ID = ?";

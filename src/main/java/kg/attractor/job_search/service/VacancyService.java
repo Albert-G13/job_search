@@ -2,6 +2,7 @@ package kg.attractor.job_search.service;
 
 import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.VacancyDto;
+import kg.attractor.job_search.dto.VacancyUpdateDto;
 
 import java.util.List;
 
@@ -16,9 +17,9 @@ public interface VacancyService {
 
     VacancyDto getById(Integer id);
 
-    void edit(Integer id, VacancyDto vacancyDto);
+    void edit(Integer id, VacancyUpdateDto vacancyDto);
 
-    Integer create(VacancyDto vacancyDto);
+    Integer create(VacancyDto vacancyDto, Integer authorId);
 
     void delete(Integer id);
 

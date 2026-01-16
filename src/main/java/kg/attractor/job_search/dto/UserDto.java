@@ -40,6 +40,9 @@ public class UserDto {
     @Pattern(regexp = "^(\\d)", message = "Should contain only digits")
     private String phoneNumber;
     private String avatar;
-    private String accountType;
+    @NotNull(message = "RoleId is required")
+    private Integer roleId;
+    private String role;
+    private boolean enabled;
 
 }
