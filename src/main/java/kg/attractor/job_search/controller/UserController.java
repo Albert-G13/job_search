@@ -1,48 +1,34 @@
 package kg.attractor.job_search.controller;
 
-import jakarta.validation.Valid;
-import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.UserEditDto;
+import kg.attractor.job_search.service.ResumeService;
 import kg.attractor.job_search.service.UserService;
+import kg.attractor.job_search.service.VacancyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-
-@RestController
+@Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
-    @GetMapping
-    public List<UserDto> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("{id}/profile")
+    public String cabinet(Model model, @PathVariable Integer id){
+        model.addAttribute("user", userService.getUserById(id));
+        return "users/profile";
     }
-    @PostMapping("/register")
-    public HttpStatus createUser(@RequestBody @Valid UserDto userDto){
-        return userService.create(userDto);
+    @GetMapping("/{id}/edit")
+    public String editProfile(Model model, @PathVariable Integer id){
+        model.addAttribute("user", userService.getUserById(id));
+        return "users/editProfile";
     }
-    @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    @PostMapping("/{id}/edit")
+    public String editProfile(@PathVariable Integer id, UserEditDto userDto) {
+        userService.edit(id, userDto);
+        return "redirect:/users/" + id + "/profile";
     }
-    @GetMapping("/search")
-    public List<UserDto> searchUsers(@RequestParam(required = false) String name,
-                                     @RequestParam(required = false) String phoneNumber,
-                                     @RequestParam(required = false) String email) {
-        return userService.searchUsers(name, phoneNumber, email);
-    }
-    @GetMapping("/exists")
-    public boolean existsByEmail(@RequestParam String email){
-        return userService.existsByEmail(email);
-    }
-    @PutMapping("/{id}")
-    public HttpStatus editUser(@PathVariable Integer id, @RequestBody @Valid UserEditDto userEditDto){
-        userService.edit(id, userEditDto);
-        return HttpStatus.ACCEPTED;
-    }
-
 }
