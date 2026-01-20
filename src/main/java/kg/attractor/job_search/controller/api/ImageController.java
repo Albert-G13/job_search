@@ -16,8 +16,8 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @GetMapping
-    public ResponseEntity<?> getImage(@RequestParam(name = "filename") String filename){
+    @GetMapping("/{filename}")
+    public ResponseEntity<?> getImage(@PathVariable("filename") String filename){
         return imageService.getById(filename);
     }
 

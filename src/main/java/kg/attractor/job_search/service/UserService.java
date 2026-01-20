@@ -1,16 +1,14 @@
 package kg.attractor.job_search.service;
 
-import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.UserEditDto;
 import kg.attractor.job_search.dto.UserRegisterDto;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
 public interface UserService {
 
-    void register(String email, String password, String phoneNumber, Integer roleId);
+    void register(UserRegisterDto userRegisterDto);
 
     boolean existsByEmail(String email);
 

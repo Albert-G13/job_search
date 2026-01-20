@@ -1,12 +1,9 @@
 package kg.attractor.job_search.service.impl;
 
 import kg.attractor.job_search.dao.WorkExperienceInfoDao;
-import kg.attractor.job_search.dto.ResumeDto;
 import kg.attractor.job_search.dto.WorkExperienceInfoDto;
-import kg.attractor.job_search.model.Resume;
 import kg.attractor.job_search.model.WorkExperienceInfo;
 import kg.attractor.job_search.service.WorkExperienceService;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

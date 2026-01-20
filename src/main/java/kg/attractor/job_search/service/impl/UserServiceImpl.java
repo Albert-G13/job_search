@@ -4,6 +4,7 @@ import kg.attractor.job_search.dao.RoleDao;
 import kg.attractor.job_search.dao.UserDao;
 import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.UserEditDto;
+import kg.attractor.job_search.dto.UserRegisterDto;
 import kg.attractor.job_search.exceptions.InvalidRoleException;
 import kg.attractor.job_search.exceptions.UserAlreadyExistsException;
 import kg.attractor.job_search.exceptions.UserNotFoundException;
@@ -25,21 +26,21 @@ public class UserServiceImpl implements UserService {
     private final RoleDao roleDao;
 
     @Override
-    public void register(String email, String password, String phoneNumber, Integer roleId) {
+    public void register(UserRegisterDto userRegisterDto) {
 
-        if (userDao.existsByEmail(email)) {
+        if (userDao.existsByEmail(userRegisterDto.getEmail())) {
             throw new UserAlreadyExistsException();
         }
 
-        if (!roleDao.existsById(roleId)) {
+        if (!roleDao.existsById(userRegisterDto.getRoleId())) {
             throw new InvalidRoleException("Неверная роль");
         }
 
         User user = User.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .phoneNumber(phoneNumber)
-                .roleId(roleId)
+                .email(userRegisterDto.getEmail())
+                .password(passwordEncoder.encode(userRegisterDto.getPassword()))
+                .phoneNumber(userRegisterDto.getPhoneNumber())
+                .roleId(userRegisterDto.getRoleId())
                 .enabled(true)
                 .build();
 

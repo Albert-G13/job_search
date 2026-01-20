@@ -9,8 +9,12 @@ import kg.attractor.job_search.dto.VacancyUpdateDto;
 import kg.attractor.job_search.exceptions.VacancyNotFoundException;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.model.Vacancy;
+import kg.attractor.job_search.security.CustomUserDetails;
 import kg.attractor.job_search.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -72,6 +76,12 @@ public class VacancyServiceImpl implements VacancyService {
     public void edit(Integer id, VacancyUpdateDto vacancyDto) {
         Vacancy vacancy = vacancyDao.getById(id)
                 .orElseThrow(VacancyNotFoundException::new);
+
+        Integer currentUserId = getCurrentUserId();
+
+        if (!vacancy.getAuthorId().equals(currentUserId)){
+            throw new AccessDeniedException("Вы не можете редактировать чужую вакансию");
+        }
 
         if (vacancyDto.getName() != null) vacancy.setName(vacancyDto.getName());
         if (vacancyDto.getDescription() != null) vacancy.setDescription(vacancyDto.getDescription());
@@ -136,5 +146,12 @@ public class VacancyServiceImpl implements VacancyService {
                 .createdDate(vacancy.getCreatedDate())
                 .updateTime(vacancy.getUpdateTime())
                 .build();
+    }
+    private Integer getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            return userDetails.getUser().getId();
+        }
+        throw new RuntimeException("Пользователь не авторизован!");
     }
 }

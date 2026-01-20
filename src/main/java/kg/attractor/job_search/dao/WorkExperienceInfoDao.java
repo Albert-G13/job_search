@@ -1,6 +1,5 @@
 package kg.attractor.job_search.dao;
 
-import kg.attractor.job_search.dto.WorkExperienceInfoDto;
 import kg.attractor.job_search.model.WorkExperienceInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
