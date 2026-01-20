@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class VacancyUpdateDto {
-
+    private Integer id;
     private Integer categoryId;
 
     @Size(min = 3, max = 100)
