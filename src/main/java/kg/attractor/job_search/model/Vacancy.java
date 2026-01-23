@@ -1,5 +1,6 @@
 package kg.attractor.job_search.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -9,10 +10,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
+@Table(name = "vacancies")
 public class Vacancy {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer categoryId;
-    private Integer authorId;
+
     private String name;
     private String description;
     private float salary;
@@ -21,4 +25,12 @@ public class Vacancy {
     private boolean isActive;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
+
+    @ManyToOne
+    @JoinColumn(name = "CATEGORY_ID")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "AUTHOR_ID")
+    private User user;
 }
