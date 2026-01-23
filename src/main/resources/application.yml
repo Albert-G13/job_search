@@ -20,6 +20,9 @@ spring:
   freemarker:
     expose-session-attributes: true
 
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
 logging:
   level:
