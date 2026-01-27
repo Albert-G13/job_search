@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 030
+      author: Albert G.
+      changes:
+        - modifyDataType:
+            tableName: resumes
+            columnName: name
+            newDataType: varchar(255)
