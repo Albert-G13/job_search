@@ -5,6 +5,7 @@ import kg.attractor.job_search.dto.VacancyDto;
 import kg.attractor.job_search.dto.VacancyUpdateDto;
 import kg.attractor.job_search.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,8 +19,8 @@ public class VacancyController {
     private final VacancyService vacancyService;
 
     @GetMapping
-    public String getVacancies(Model model){
-        model.addAttribute("vacancies", vacancyService.getAllVacancies());
+    public String getVacancies(Pageable page, Model model){
+        model.addAttribute("vacancies", vacancyService.findAllVacancies(page));
         return "vacancies/index";
     }
 
@@ -32,17 +33,19 @@ public class VacancyController {
 
     @PostMapping("/create/{authorId}")
     public String createPost(@Valid @ModelAttribute("vacancy") VacancyDto dto,BindingResult bindingResult, @PathVariable Integer authorId, Model model) {
+
         if (bindingResult.hasErrors()){
             model.addAttribute("authorId", authorId);
             return "vacancies/create";
         }
+
         vacancyService.create(dto, authorId);
         return "redirect:/vacancies";
     }
 
     @GetMapping("/{id}/edit")
     public String editGet(@PathVariable Integer id, Model model) {
-        model.addAttribute("vacancy", vacancyService.getById(id));
+        model.addAttribute("vacancy", vacancyService.getForUpdate(id));
         return "vacancies/edit";
     }
 
@@ -56,5 +59,11 @@ public class VacancyController {
 
         vacancyService.edit(id, dto);
         return "redirect:/vacancies";
+    }
+
+    @PostMapping("/{id}/update")
+    public String update(@PathVariable Integer id, VacancyDto vacancyDto){
+        Integer userId = vacancyService.update(id, vacancyDto);
+        return "redirect:/users/" +  userId + "/profile";
     }
 }

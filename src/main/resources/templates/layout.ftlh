@@ -32,7 +32,7 @@
                 </li>
                 <li class="nav-item">
                     <#if user??>
-                        <#if user.role == "APPLICANT">
+                        <#if user.role.role == "APPLICANT">
                             <a class="nav-link" href="/vacancies">Vacancies</a>
                         <#else>
                             <a class="nav-link" href="/resumes">Resumes</a>

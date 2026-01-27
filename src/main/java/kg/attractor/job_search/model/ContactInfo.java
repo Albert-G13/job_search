@@ -13,7 +13,7 @@ public class ContactInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String value;
+    private String contactValue;
 
     @ManyToOne
     @JoinColumn(name = "RESUME_ID")

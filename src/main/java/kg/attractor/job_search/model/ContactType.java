@@ -13,5 +13,5 @@ public class ContactType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String contactType;
+    private String type;
 }

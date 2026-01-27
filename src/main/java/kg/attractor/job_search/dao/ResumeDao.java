@@ -60,8 +60,8 @@ public class ResumeDao {
             ps.setBoolean(3, resume.isActive());
             ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
             ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
-            ps.setInt(6, resume.getApplicantId());
-            ps.setInt(7, resume.getCategoryId());
+            ps.setInt(6, resume.getUser().getId());
+            ps.setInt(7, resume.getCategory().getId());
             return ps;
         }, keyHolder);
 
@@ -75,7 +75,7 @@ public class ResumeDao {
                 resume.getSalary(),
                 resume.isActive(),
                 Timestamp.valueOf(LocalDateTime.now()),
-                resume.getCategoryId(),
+                resume.getCategory().getId(),
                 resume.getId()
         );
     }

@@ -1,15 +1,14 @@
 package kg.attractor.job_search.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = "users")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,9 +17,9 @@ import java.util.Set;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String role;
-    private Long authorityId;
+    private Integer authorityId;
 
     @OneToMany
     @JoinColumn(name = "ROLE_ID")

@@ -3,8 +3,10 @@ package kg.attractor.job_search.controller;
 import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.ResumeDto;
 import kg.attractor.job_search.dto.ResumeEditDto;
+import kg.attractor.job_search.repository.ResumeRepository;
 import kg.attractor.job_search.service.ResumeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
+    private final ResumeRepository resumeRepository;
 
     @GetMapping
-    public String getResumes(Model model){
-        model.addAttribute("resumes", resumeService.getAllResumes());
+    public String getResumes(Pageable page, Model model){
+        model.addAttribute("resumes", resumeService.findAllResumes(page));
         return "resumes/resume";
     }
 
@@ -31,6 +34,7 @@ public class ResumeController {
 
     @PostMapping("/create/{applicantId}")
     public String createPost(@Valid @ModelAttribute("resume") ResumeDto dto, BindingResult bindingResult, @PathVariable Integer applicantId, Model model) {
+
         if (bindingResult.hasErrors()){
             model.addAttribute("applicantId", applicantId);
             return "resumes/create";
@@ -42,7 +46,7 @@ public class ResumeController {
 
     @GetMapping("/{id}/edit")
     public String editGet(@PathVariable Integer id, Model model) {
-        model.addAttribute("resume", resumeService.getById(id));
+        model.addAttribute("resume", resumeService.getForUpdate(id));
         return "resumes/edit";
     }
 
@@ -55,5 +59,10 @@ public class ResumeController {
 
         resumeService.edit(id, dto);
         return "redirect:/resumes";
+    }
+    @PostMapping("/{id}/update")
+    public String update(@PathVariable Integer id, ResumeDto resumeDto){
+        Integer userId = resumeService.update(id, resumeDto);
+        return "redirect:/users/" +  userId + "/profile";
     }
 }

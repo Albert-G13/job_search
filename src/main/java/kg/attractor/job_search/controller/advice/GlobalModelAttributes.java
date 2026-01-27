@@ -8,16 +8,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Objects;
 
-@ControllerAdvice
-public class GlobalModelAttributes {
+    @ControllerAdvice
+    public class GlobalModelAttributes {
 
-    @ModelAttribute("user")
-    public User user(Authentication authentication) {
-        if (authentication == null ||
-                "anonymousUser".equals(authentication.getPrincipal())) {
-            return null;
+        @ModelAttribute("user")
+        public User user(Authentication authentication) {
+            if (authentication == null ||
+                    "anonymousUser".equals(authentication.getPrincipal())) {
+                return null;
+            }
+            return ((CustomUserDetails) Objects.requireNonNull(authentication.getPrincipal())).getUser();
         }
-
-        return ((CustomUserDetails) Objects.requireNonNull(authentication.getPrincipal())).getUser();
     }
-}

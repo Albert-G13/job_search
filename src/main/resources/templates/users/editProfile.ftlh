@@ -20,16 +20,6 @@
                 <@spring.showErrors "<br>" "error text-danger"/>
             </div>
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <@spring.formInput "userDto.email" 'type="email" class="form-control" id="email"' />
-                <@spring.showErrors "<br>" "error text-danger"/>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Пароль (оставьте поле пустым чтобы не менять)</label>
-                <@spring.formPasswordInput "userDto.password" 'class="form-control" id="password"' />
-                <@spring.showErrors "<br>" "error text-danger"/>
-            </div>
-            <div class="mb-3">
                 <label for="phoneNumber" class="form-label">Номер телефона</label>
                 <@spring.formInput "userDto.phoneNumber" 'class="form-control" id="phoneNumber"' />
                 <@spring.showErrors "<br>" "error text-danger"/>
@@ -37,9 +27,9 @@
             <div class="mb-3">
                 <label class="form-label">Аватар</label>
                 <input type="file" name="file" class="form-control" accept="image/*">
-                <#if user.avatar??>
+                <#if userDto.avatar??>
                     <div class="mt-2">
-                        <img src="/images/${user.avatar}" alt="Avatar" style="width: 100px; height: 100px; object-fit: cover;">
+                        <img src="/images/${userDto.avatar}" alt="Avatar" style="width: 100px; height: 100px; object-fit: cover;">
                     </div>
                 </#if>
             </div>
