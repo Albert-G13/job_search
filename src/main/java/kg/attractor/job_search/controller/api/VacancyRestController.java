@@ -38,7 +38,7 @@ public class VacancyRestController {
         return vacancyService.getRespondedApplicantsByVacancyId(vacancyId);
     }
     @PostMapping("/{authorId}/vacancies")
-    public Integer createVacancy(@PathVariable Integer authorId, @RequestBody @Valid VacancyDto vacancyDto){
+    public VacancyDto createVacancy(@PathVariable Integer authorId, @RequestBody @Valid VacancyDto vacancyDto){
         return vacancyService.create(vacancyDto, authorId);
     }
     @PutMapping("/vacancies/{id}")

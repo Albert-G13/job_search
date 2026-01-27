@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "users_table", schema = "public")
+@ToString(exclude = "role")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +26,10 @@ public class User {
     private String phoneNumber;
 
     private String avatar;
-    private String role;
 
     @ManyToOne
     @JoinColumn(name = "ROLE_ID")
-    private Role roleId;
+    private Role role;
 
     private boolean enabled;
 }

@@ -24,7 +24,7 @@ public class UserDto {
     private String email;
     @NotBlank
     @Size(
-            min = 8, max = 20,
+            min = 5, max = 20,
             message = "Length must be greater/equals 5 and less/equals than 20 digits"
     )
     @Pattern(
@@ -37,7 +37,7 @@ public class UserDto {
             min = 12, max = 12,
             message = "Length must be 12 digits"
     )
-    @Pattern(regexp = "^(\\d)", message = "Should contain only digits")
+    @Pattern(regexp = "^\\d+$", message = "Should contain only digits")
     private String phoneNumber;
     private String avatar;
     @NotNull(message = "RoleId is required")

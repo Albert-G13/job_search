@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface UserService {
 
+    UserDto findUserById(Integer id);
+
     void register(UserRegisterDto userRegisterDto);
 
     boolean existsByEmail(String email);
@@ -18,8 +20,9 @@ public interface UserService {
 
     UserDto getUserById(Integer id);
 
+    UserEditDto getUserEditById(Integer id);
+
     void create(UserDto userDto);
 
     void edit(Integer id, UserEditDto userEditDto);
-
 }

@@ -22,12 +22,12 @@
             </div>
             <div class="form-check form-switch mb-4">
                 <input class="form-check-input" type="checkbox" name="isActive" id="activeSwitch"
-                        ${resume.active?string('checked', '')}>
+                        ${resume.isActive?string('checked', '')}>
                 <label class="form-check-label" for="activeSwitch">Резюме активно</label>
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">Save</button>
-                <a href="/resumes" class="btn btn-outline-secondary">Cancel</a>
+                <a href="/users/#{user.id}/profile" class="btn btn-outline-secondary">Cancel</a>
             </div>
         </form>
     </div>

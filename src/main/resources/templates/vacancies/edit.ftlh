@@ -38,7 +38,7 @@
             </div>
             <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-primary">Сохранить</button>
-                <a href="/vacancies" class="btn btn-outline-secondary">Отмена</a>
+                <a href="/users/#{user.id}/profile" class="btn btn-outline-secondary">Отмена</a>
             </div>
         </form>
     </div>

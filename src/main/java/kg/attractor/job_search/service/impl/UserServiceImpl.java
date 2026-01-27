@@ -6,9 +6,13 @@ import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.UserEditDto;
 import kg.attractor.job_search.dto.UserRegisterDto;
 import kg.attractor.job_search.exceptions.InvalidRoleException;
+import kg.attractor.job_search.exceptions.RoleNotFoundException;
 import kg.attractor.job_search.exceptions.UserAlreadyExistsException;
 import kg.attractor.job_search.exceptions.UserNotFoundException;
+import kg.attractor.job_search.model.Role;
 import kg.attractor.job_search.model.User;
+import kg.attractor.job_search.repository.RoleRepository;
+import kg.attractor.job_search.repository.UserRepository;
 import kg.attractor.job_search.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,15 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final RoleDao roleDao;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
+    @Override
+    public UserDto findUserById(Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        return convertUserToDto(user);
+    }
 
     @Override
     public void register(UserRegisterDto userRegisterDto) {
@@ -36,11 +49,14 @@ public class UserServiceImpl implements UserService {
             throw new InvalidRoleException("Неверная роль");
         }
 
+        Role role = roleRepository.findById(userRegisterDto.getRoleId())
+                .orElseThrow(RoleNotFoundException::new);
+
         User user = User.builder()
                 .email(userRegisterDto.getEmail())
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .phoneNumber(userRegisterDto.getPhoneNumber())
-                .roleId(userRegisterDto.getRoleId())
+                .role(role)
                 .enabled(true)
                 .build();
 
@@ -71,6 +87,18 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
         return convertUserToDto(user);
     }
+    @Override
+    public UserEditDto getUserEditById(Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        return UserEditDto.builder()
+                .name(user.getName())
+                .surname(user.getSurname())
+                .age(user.getAge())
+                .phoneNumber(user.getPhoneNumber())
+                .avatar(user.getAvatar())
+                .build();
+    }
 
     @Override
     public void create(UserDto userDto) {
@@ -83,6 +111,9 @@ public class UserServiceImpl implements UserService {
             throw new InvalidRoleException("Неверная роль");
         }
 
+        Role role = roleRepository.findById(userDto.getRoleId())
+                .orElseThrow(RoleNotFoundException::new);
+
         User user = User.builder()
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
@@ -91,7 +122,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .phoneNumber(userDto.getPhoneNumber())
                 .avatar(userDto.getAvatar())
-                .roleId(userDto.getRoleId())
+                .role(role)
                 .enabled(true)
                 .build();
         userDao.create(user);
@@ -99,36 +130,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void edit(Integer id, UserEditDto userEditDto) {
-        User user = userDao.getUserById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
 
-        if (userEditDto.getName() != null && !userEditDto.getName().isBlank()) {
+        if (userEditDto.getName() != null) {
             user.setName(userEditDto.getName());
         }
-        if (userEditDto.getSurname() != null && !userEditDto.getSurname().isBlank()) {
+
+        if (userEditDto.getSurname() != null) {
             user.setSurname(userEditDto.getSurname());
         }
-        if (userEditDto.getAge() != null && userEditDto.getAge() >= 14 && userEditDto.getAge() <= 100) {
-            user.setAge(userEditDto.getAge());
-        }
-        if (userEditDto.getEmail() != null && !userEditDto.getEmail().isBlank()) {
-            user.setEmail(userEditDto.getEmail());
-        }
-        if (userEditDto.getPassword() != null && !userEditDto.getPassword().isBlank()) {
-            String hashed = passwordEncoder.encode(userEditDto.getPassword());
-            user.setPassword(hashed);
-        }
-        if (userEditDto.getPhoneNumber() != null && !userEditDto.getPhoneNumber().isBlank()) {
+
+        if (userEditDto.getPhoneNumber() != null) {
             user.setPhoneNumber(userEditDto.getPhoneNumber());
         }
-        if (userEditDto.getAvatar() != null) {
-            user.setAvatar(userEditDto.getAvatar());
+
+        if (userEditDto.getAge() != null) {
+                    user.setAge(userEditDto.getAge());
         }
 
-        userDao.edit(user);
+
+        if (userEditDto.getAvatar() != null) {
+                    user.setAvatar(userEditDto.getAvatar());
+        }
+
+        userRepository.saveAndFlush(user);
     }
 
-    private UserDto convertUserToDto(User user) {
+    public UserDto convertUserToDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -138,8 +167,8 @@ public class UserServiceImpl implements UserService {
                 .password(user.getPassword())
                 .phoneNumber(user.getPhoneNumber())
                 .avatar(user.getAvatar())
-                .role(user.getRole())
-                .roleId(user.getRoleId())
+                .role(user.getRole().getRole())
+                .roleId(user.getRole().getId())
                 .build();
     }
 }

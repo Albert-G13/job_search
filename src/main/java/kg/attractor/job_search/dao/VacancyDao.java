@@ -112,7 +112,7 @@ public class VacancyDao {
                 vacancy.getExpFrom(),
                 vacancy.getExpTo(),
                 vacancy.isActive(),
-                vacancy.getCategoryId(),
+                vacancy.getCategory().getId(),
                 Timestamp.valueOf(vacancy.getUpdateTime()),
                 vacancy.getId()
         );

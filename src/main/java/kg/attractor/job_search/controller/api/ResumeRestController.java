@@ -36,8 +36,8 @@ public class ResumeRestController {
         return resumeService.create(resumeDto, applicantId);
     }
     @PutMapping("/resumes/{id}")
-    public ResumeDto editResume(@PathVariable Integer id, @RequestBody @Valid ResumeEditDto resumeDto){
-        return resumeService.edit(id, resumeDto);
+    public void editResume(@PathVariable Integer id, @RequestBody @Valid ResumeEditDto resumeDto){
+        resumeService.edit(id, resumeDto);
     }
     @PutMapping("/resumes/{id}/update")
     public HttpStatus updateResume(@PathVariable Integer id, @RequestBody @Valid ResumeDto resumeDto){

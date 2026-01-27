@@ -52,7 +52,7 @@ public class UserDao {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getPhoneNumber());
-            ps.setInt(4, user.getRoleId());
+            ps.setInt(4, user.getRole().getId());
             ps.setBoolean(5, user.isEnabled());
             return ps;
         }, keyHolder);
@@ -110,24 +110,21 @@ public class UserDao {
             ps.setString(5, user.getPassword());
             ps.setString(6, user.getPhoneNumber());
             ps.setString(7, user.getAvatar());
-            ps.setInt(8, user.getRoleId());
+            ps.setInt(8, user.getRole().getId());
             return ps;
         }, keyHolder);
     }
 
     public void edit(User user) {
         String sql = "UPDATE USERS_TABLE SET " +
-                "NAME = ?, SURNAME = ?, AGE = ?, EMAIL = ?, PASSWORD = ?, PHONE_NUMBER = ?, AVATAR = ?, ROLE_ID = ? " +
+                "NAME = ?, SURNAME = ?, AGE = ?, PHONE_NUMBER = ?, AVATAR = ? " +
                 "WHERE ID = ?";
         jdbcTemplate.update(sql,
                 user.getName(),
                 user.getSurname(),
                 user.getAge(),
                 user.getEmail(),
-                user.getPassword(),
-                user.getPhoneNumber(),
                 user.getAvatar(),
-                user.getRoleId(),
                 user.getId()
         );
     }

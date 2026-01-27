@@ -29,7 +29,7 @@ public class EducationInfoDao {
                 educationInfo.getStartDate(),
                 educationInfo.getEndDate(),
                 educationInfo.getDegree(),
-                educationInfo.getResumeId());
+                educationInfo.getResume().getId());
     }
     public void deleteByResumeId(Integer resumeId) {
         String sql = "DELETE FROM EDUCATION_INFO WHERE RESUME_ID = ?";

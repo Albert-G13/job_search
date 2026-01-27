@@ -3,7 +3,7 @@ package kg.attractor.job_search.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -19,8 +19,8 @@ public class EducationInfo {
 
     private String institution;
     private String program;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String degree;
 
     @ManyToOne

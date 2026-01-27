@@ -22,7 +22,7 @@ public class WorkExperienceInfoDao {
                 "RESPONSIBILITIES) " +
                 "VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
-                workExperienceInfo.getResumeId(),
+                workExperienceInfo.getResume().getId(),
                 workExperienceInfo.getYears(),
                 workExperienceInfo.getCompanyName(),
                 workExperienceInfo.getPosition(),

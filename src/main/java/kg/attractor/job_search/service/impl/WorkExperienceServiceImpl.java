@@ -42,7 +42,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                 .position(workExperienceInfo.getPosition())
                 .years(workExperienceInfo.getYears())
                 .responsibilities(workExperienceInfo.getResponsibilities())
-                .resumeId(workExperienceInfo.getResumeId())
+                .resumeId(workExperienceInfo.getResume().getId())
                 .build();
     }
 }
