@@ -35,7 +35,8 @@ public class VacancyRestController {
     }
     @GetMapping("/vacancies/{vacancyId}/responded")
     public List<UserDto> getRespondedApplicantsByVacancyId(@PathVariable Integer vacancyId){
-        return vacancyService.getRespondedApplicantsByVacancyId(vacancyId);
+//        return vacancyService.getRespondedApplicantsByVacancyId(vacancyId);
+        return null;
     }
     @PostMapping("/{authorId}/vacancies")
     public VacancyDto createVacancy(@PathVariable Integer authorId, @RequestBody @Valid VacancyDto vacancyDto){

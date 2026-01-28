@@ -1,6 +1,5 @@
 package kg.attractor.job_search.service.impl;
 
-import kg.attractor.job_search.dao.ResumeDao;
 import kg.attractor.job_search.dto.ResumeDto;
 import kg.attractor.job_search.dto.ResumeEditDto;
 import kg.attractor.job_search.exceptions.CategoryNotFoundException;
@@ -24,7 +23,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
-    private final ResumeDao resumeDao;
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
@@ -42,25 +40,20 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<ResumeDto> getList(Integer id) {
-        List<Resume> resumes = resumeDao.getList(id);
+    public List<ResumeDto> getList(Integer categoryId) {
+        List<Resume> resumes = resumeRepository.findByCategory_Id(categoryId);
         return resumes.stream().map(this::convertToResumeDto).toList();
     }
 
     @Override
-    public List<ResumeDto> getListByApplicantId(Integer id) {
-        return resumeDao.getListByApplicantId(id).stream().map(this::convertToResumeDto).toList();
-    }
-
-    @Override
     public List<ResumeDto> getAllResumes() {
-        List<Resume> resumes = resumeDao.getAllResumes();
+        List<Resume> resumes = resumeRepository.findAll();
         return resumes.stream().map(this::convertToResumeDto).toList();
     }
 
     @Override
     public ResumeDto getById(Integer id) {
-        Resume resume = resumeDao.getById(id)
+        Resume resume = resumeRepository.findById(id)
                 .orElseThrow(ResumeNotFoundException::new);
         return convertToResumeDto(resume);
     }
@@ -139,9 +132,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     public void delete(Integer resumeId) {
-        resumeDao.getById(resumeId)
-                .orElseThrow(ResumeNotFoundException::new);
-        resumeDao.deleteById(resumeId);
+        resumeRepository.deleteById(resumeId);
     }
 
     private ResumeDto convertToResumeDto (Resume resume){

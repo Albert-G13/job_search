@@ -3,7 +3,6 @@ package kg.attractor.job_search.controller;
 import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.ResumeDto;
 import kg.attractor.job_search.dto.ResumeEditDto;
-import kg.attractor.job_search.repository.ResumeRepository;
 import kg.attractor.job_search.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
-    private final ResumeRepository resumeRepository;
 
     @GetMapping
     public String getResumes(Pageable page, Model model){

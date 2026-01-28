@@ -20,8 +20,6 @@ public interface VacancyService {
 
     List<VacancyDto> getVacanciesByCategoryId(Integer categoryId);
 
-    List<UserDto> getRespondedApplicantsByVacancyId(Integer vacancyId);
-
     VacancyDto getById(Integer id);
 
     void edit(Integer id, VacancyUpdateDto vacancyDto);

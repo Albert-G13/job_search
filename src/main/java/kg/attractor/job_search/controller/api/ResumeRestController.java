@@ -25,7 +25,8 @@ public class ResumeRestController {
     }
     @GetMapping("/{id}/resumes")
     public List<ResumeDto> getResumeByApplicantId(@PathVariable Integer id) {
-        return resumeService.getListByApplicantId(id);
+//        return resumeService.getListByApplicantId(id);
+        return null;
     }
     @GetMapping("/resumes/{id}")
     public ResumeDto getResumeById(@PathVariable Integer id){

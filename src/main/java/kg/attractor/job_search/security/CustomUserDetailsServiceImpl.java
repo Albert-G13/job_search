@@ -1,6 +1,5 @@
 package kg.attractor.job_search.security;
 
-import kg.attractor.job_search.dao.UserDao;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserDao userDao;
     private final UserRepository userRepository;
 
     @Override

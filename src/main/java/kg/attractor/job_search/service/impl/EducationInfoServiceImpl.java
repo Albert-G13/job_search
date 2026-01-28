@@ -5,6 +5,7 @@ import kg.attractor.job_search.dto.EducationInfoDto;
 import kg.attractor.job_search.exceptions.ResumeNotFoundException;
 import kg.attractor.job_search.model.EducationInfo;
 import kg.attractor.job_search.model.Resume;
+import kg.attractor.job_search.repository.EducationInfoRepository;
 import kg.attractor.job_search.repository.ResumeRepository;
 import kg.attractor.job_search.service.EducationService;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EducationInfoServiceImpl implements EducationService {
-    private final EducationInfoDao educationInfoDao;
     private final ResumeRepository resumeRepository;
+    private final EducationInfoRepository educationInfoRepository;
 
     @Override
-    public EducationInfoDto create(EducationInfoDto educationInfoDto){
-        Resume resume = resumeRepository.findById(educationInfoDto.getResumeId())
+    public EducationInfoDto create(EducationInfoDto educationInfoDto, Integer resumeId){
+        Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(ResumeNotFoundException::new);
         EducationInfo educationInfo = EducationInfo
                 .builder()
@@ -32,16 +33,27 @@ public class EducationInfoServiceImpl implements EducationService {
                 .startDate(LocalDate.from(educationInfoDto.getStartDate()))
                 .resume(resume)
                 .build();
-        educationInfoDao.create(educationInfo);
+        educationInfoRepository.save(educationInfo);
         return educationInfoDto;
     }
     @Override
     public List<EducationInfoDto> getByResumeId(Integer resumeId) {
-        return educationInfoDao.getListByResumeId(resumeId);
+        List<EducationInfo> educationInfos = educationInfoRepository.findByResume_Id(resumeId);
+        return educationInfos.stream().map(this::convertToDto).toList();
     }
 
     @Override
     public void delete(Integer id) {
-        educationInfoDao.deleteByResumeId(id);
+        educationInfoRepository.deleteByResume_Id(id);
+    }
+
+    private EducationInfoDto convertToDto(EducationInfo educationInfo){
+        return EducationInfoDto.builder()
+                .institution(educationInfo.getInstitution())
+                .program(educationInfo.getProgram())
+                .degree(educationInfo.getDegree())
+                .endDate(educationInfo.getEndDate().atStartOfDay())
+                .startDate(educationInfo.getStartDate().atStartOfDay())
+                .build();
     }
 }

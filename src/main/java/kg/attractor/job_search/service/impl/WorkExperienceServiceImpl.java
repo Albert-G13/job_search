@@ -3,6 +3,7 @@ package kg.attractor.job_search.service.impl;
 import kg.attractor.job_search.dao.WorkExperienceInfoDao;
 import kg.attractor.job_search.dto.WorkExperienceInfoDto;
 import kg.attractor.job_search.model.WorkExperienceInfo;
+import kg.attractor.job_search.repository.WorkExperienceInfoRepository;
 import kg.attractor.job_search.service.WorkExperienceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class WorkExperienceServiceImpl implements WorkExperienceService {
-    private final WorkExperienceInfoDao workExperienceInfoDao;
+    private final WorkExperienceInfoRepository workExperienceInfoRepository;
 
     @Override
     public WorkExperienceInfoDto create(WorkExperienceInfoDto workExperienceInfoDto){
@@ -23,17 +24,17 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                 .responsibilities(workExperienceInfoDto.getResponsibilities())
                 .position(workExperienceInfoDto.getPosition())
                 .build();
-        workExperienceInfoDao.create(workExperienceInfo);
+        workExperienceInfoRepository.save(workExperienceInfo);
         return convertToWorkExperienceInfoDto(workExperienceInfo);
     }
     @Override
     public List<WorkExperienceInfoDto> getByResumeId(Integer resumeId) {
-        return workExperienceInfoDao.getListByResumeId(resumeId).stream().map(this::convertToWorkExperienceInfoDto).toList();
+        return workExperienceInfoRepository.findByResume_Id(resumeId).stream().map(this::convertToWorkExperienceInfoDto).toList();
     }
 
     @Override
     public void delete(Integer id) {
-        workExperienceInfoDao.deleteByResumeId(id);
+        workExperienceInfoRepository.deleteByResume_Id(id);
     }
 
     private WorkExperienceInfoDto convertToWorkExperienceInfoDto (WorkExperienceInfo workExperienceInfo){

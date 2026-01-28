@@ -5,7 +5,7 @@ import kg.attractor.job_search.dto.EducationInfoDto;
 import java.util.List;
 
 public interface EducationService {
-    EducationInfoDto create(EducationInfoDto educationInfoDto);
+    EducationInfoDto create(EducationInfoDto educationInfoDto, Integer resumeId);
 
     List<EducationInfoDto> getByResumeId(Integer resumeId);
 

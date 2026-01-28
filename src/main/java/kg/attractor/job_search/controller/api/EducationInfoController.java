@@ -17,7 +17,8 @@ public class EducationInfoController {
 
     @PostMapping
     public EducationInfoDto create(@RequestBody @Valid EducationInfoDto dto) {
-        return educationInfoServiceImpl.create(dto);
+//        return educationInfoServiceImpl.create(dto);
+        return null;
     }
 
     @GetMapping("resume/{resumeId}")

@@ -1,9 +1,6 @@
 package kg.attractor.job_search.service.impl;
 
-import kg.attractor.job_search.dao.CategoryDao;
-import kg.attractor.job_search.dao.UserDao;
 import kg.attractor.job_search.dao.VacancyDao;
-import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.VacancyDto;
 import kg.attractor.job_search.dto.VacancyUpdateDto;
 import kg.attractor.job_search.exceptions.CategoryNotFoundException;
@@ -27,15 +24,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class VacancyServiceImpl implements VacancyService {
-    private final VacancyDao vacancyDao;
-    private final UserDao userDao;
-    private final CategoryDao categoryDao;
     private final VacancyRepository vacancyRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
@@ -62,44 +55,25 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public List<VacancyDto> getAllVacancies() {
-        List<Vacancy> vacancies = vacancyDao.getAllVacancies();
+        List<Vacancy> vacancies = vacancyRepository.findAll();
         return vacancies.stream().map(this::convertToVacancyDto).toList();
     }
 
     @Override
     public List<VacancyDto> getVacanciesByRespondedId(Integer applicantId) {
-        List<Vacancy> vacancies = vacancyDao.getVacanciesByRespondedId(applicantId);
+        List<Vacancy> vacancies = vacancyRepository.findByRespondedApplicantId(applicantId);
         return vacancies.stream().map(this::convertToVacancyDto).toList();
     }
 
     @Override
     public List<VacancyDto> getVacanciesByCategoryId(Integer categoryId) {
-        List<Vacancy> vacancies = vacancyDao.getVacanciesByCategoryId(categoryId);
+        List<Vacancy> vacancies = vacancyRepository.findByCategory_Id(categoryId);
         return vacancies.stream().map(this::convertToVacancyDto).toList();
-    }
-    @Override
-    public List<UserDto> getRespondedApplicantsByVacancyId(Integer vacancyId) {
-        List<User> users = vacancyDao.getRespondedApplicantsByVacancyId(vacancyId);
-        List<UserDto> userDtos = new ArrayList<>();
-        users.forEach(user -> {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setName(user.getName());
-            userDto.setSurname(user.getSurname());
-            userDto.setAge(user.getAge());
-            userDto.setEmail(user.getEmail());
-            userDto.setPassword(user.getPassword());
-            userDto.setPhoneNumber(user.getPhoneNumber());
-            userDto.setAvatar(user.getAvatar());
-            userDto.setRoleId(user.getRole().getId());
-            userDtos.add(userDto);
-        });
-        return userDtos;
     }
 
     @Override
     public VacancyDto getById(Integer id) {
-        Vacancy vacancy = vacancyDao.getById(id)
+        Vacancy vacancy = vacancyRepository.findById(id)
                 .orElseThrow(VacancyNotFoundException::new);
         return convertToVacancyDto(vacancy);
     }
@@ -155,9 +129,7 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     public void delete(Integer id) {
-        vacancyDao.getById(id)
-                .orElseThrow(VacancyNotFoundException::new);
-        vacancyDao.deleteById(id);
+        vacancyRepository.deleteById(id);
     }
 
     @Override
