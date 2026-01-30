@@ -2,6 +2,9 @@
 <@main.layout ; spring>
     <div class="d-flex justify-content-center">
         <form id="register-form" action="/auth/register" method="post">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}">
+            </#if>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
                 <@spring.formInput "userRegisterDto.email" 'type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp"'/>
@@ -19,7 +22,7 @@
                 <@spring.showErrors "<p>" "error text-danger"/>
             </div>
             <select class="form-select mb-3" name="roleId" aria-label="Default select example">
-                <option value="">Choose role</option>
+                <option value="">Выберите роль</option>
                 <option value="1">Applicant</option>
                 <option value="2">Employer</option>
             </select>
