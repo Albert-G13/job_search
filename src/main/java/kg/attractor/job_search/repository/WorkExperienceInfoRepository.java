@@ -12,4 +12,7 @@ public interface WorkExperienceInfoRepository extends JpaRepository<WorkExperien
     void deleteByResume_Id(Integer resumeId);
 
     List<WorkExperienceInfo> findByResume_Id(Integer resumeId);
+
+    void deleteAllByResume_Id(Integer resumeId);
+
 }

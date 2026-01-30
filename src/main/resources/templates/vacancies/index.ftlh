@@ -18,7 +18,6 @@
                     <h5 class="card-title">${vacancy.name}</h5>
                     <h6 class="card-subtitle mb-2 text-body-secondary">${vacancy.salary}$</h6>
                     <p class="card-text">${vacancy.description}</p>
-                    <a href="#" class="card-link">Info</a>
                 </div>
             </div>
         </#list>

@@ -7,8 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -16,7 +17,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EducationInfoDto {
     private Integer id;
-    @NotNull(message = "Resume id is required")
     private Integer resumeId;
     @NotBlank(message = "Institution is required")
     @Size(max = 100)
@@ -25,9 +25,10 @@ public class EducationInfoDto {
     @Size(max = 100)
     private String program;
     @NotNull(message = "Start date is required")
-    private LocalDateTime startDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate startDate;    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "End date is required")
-    private LocalDateTime endDate;
+    private LocalDate endDate;
     @NotBlank(message = "Degree is required")
     private String degree;
 }

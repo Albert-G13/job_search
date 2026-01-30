@@ -1,11 +1,13 @@
 package kg.attractor.job_search.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "contacts_info")
 public class ContactInfo {
@@ -22,6 +24,5 @@ public class ContactInfo {
     @ManyToOne
     @JoinColumn(name = "TYPE_ID")
     private ContactType contactType;
-
 
 }

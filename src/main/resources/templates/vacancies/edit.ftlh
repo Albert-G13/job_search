@@ -4,7 +4,10 @@
 <@main.layout ; spring>
     <div class="d-flex justify-content-center mt-5">
         <form action="/vacancies/${vacancy.id}/edit" method="post" style="width: 100%; max-width: 700px;">
-            <h2 class="mb-4">Редактирование вакансии #${vacancy.id}</h2>
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}">
+            </#if>
+            <h2 class="mb-4">Редактировать вакансию</h2>
             <div class="mb-3">
                 <label class="form-label">Название вакансии</label>
                 <@spring.formInput "vacancy.name" 'class="form-control"' />

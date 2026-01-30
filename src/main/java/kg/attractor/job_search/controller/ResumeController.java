@@ -1,9 +1,8 @@
 package kg.attractor.job_search.controller;
 
 import jakarta.validation.Valid;
-import kg.attractor.job_search.dto.ResumeDto;
-import kg.attractor.job_search.dto.ResumeEditDto;
-import kg.attractor.job_search.service.ResumeService;
+import kg.attractor.job_search.dto.*;
+import kg.attractor.job_search.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
+    private final ContactTypeService contactTypeService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public String getResumes(Pageable page, Model model){
@@ -27,6 +28,10 @@ public class ResumeController {
     public String createGet(Model model, @PathVariable Integer applicantId) {
         model.addAttribute("resume", new ResumeDto());
         model.addAttribute("applicantId", applicantId);
+        model.addAttribute("education", new EducationInfoDto());
+        model.addAttribute("workExp", new WorkExperienceInfoDto());
+        model.addAttribute("contactTypes", contactTypeService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "resumes/create";
     }
 
@@ -34,7 +39,13 @@ public class ResumeController {
     public String createPost(@Valid @ModelAttribute("resume") ResumeDto dto, BindingResult bindingResult, @PathVariable Integer applicantId, Model model) {
 
         if (bindingResult.hasErrors()){
+
             model.addAttribute("applicantId", applicantId);
+            model.addAttribute("education", new EducationInfoDto());
+            model.addAttribute("workExp", new WorkExperienceInfoDto());
+            model.addAttribute("contactTypes", contactTypeService.findAll());
+            model.addAttribute("categories", categoryService.findAll());
+
             return "resumes/create";
         }
 
@@ -44,20 +55,33 @@ public class ResumeController {
 
     @GetMapping("/{id}/edit")
     public String editGet(@PathVariable Integer id, Model model) {
-        model.addAttribute("resume", resumeService.getForUpdate(id));
+        ResumeDto resume = resumeService.getById(id);
+
+        model.addAttribute("resume", resume);
+        model.addAttribute("education", new EducationInfoDto());
+        model.addAttribute("workExp", new WorkExperienceInfoDto());
+        model.addAttribute("contactTypes", contactTypeService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
+
         return "resumes/edit";
     }
 
     @PostMapping("/{id}/edit")
-    public String editPost(@PathVariable Integer id, @Valid @ModelAttribute("resume") ResumeEditDto dto, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()){
-            dto.setId(id);
+    public String editPost(@PathVariable Integer id,
+                           @Valid @ModelAttribute("resume") ResumeEditDto dto,
+                           BindingResult bindingResult,
+                           Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("contactTypes", contactTypeService.findAll());
+            model.addAttribute("categories", categoryService.findAll());
             return "resumes/edit";
         }
 
         resumeService.edit(id, dto);
         return "redirect:/resumes";
     }
+
     @PostMapping("/{id}/update")
     public String update(@PathVariable Integer id, ResumeDto resumeDto){
         Integer userId = resumeService.update(id, resumeDto);

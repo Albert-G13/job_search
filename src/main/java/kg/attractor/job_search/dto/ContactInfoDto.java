@@ -1,5 +1,6 @@
 package kg.attractor.job_search.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDto {
+public class ContactInfoDto {
     private Integer id;
-    private Integer parentId;
-    private String name;
+    @NotNull(message = "Выберите тип контакта")
+    private Integer typeId;
+    private String contactValue;
 }

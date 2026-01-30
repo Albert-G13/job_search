@@ -10,6 +10,6 @@ import java.util.List;
 public interface EducationInfoRepository extends JpaRepository<EducationInfo, Integer> {
 
     void deleteByResume_Id(Integer resumeId);
-
+    void deleteAllByResume_Id(Integer resumeId);
     List<EducationInfo> findByResume_Id(Integer resumeId);
 }

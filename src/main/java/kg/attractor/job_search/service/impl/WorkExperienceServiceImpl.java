@@ -1,8 +1,9 @@
 package kg.attractor.job_search.service.impl;
 
-import kg.attractor.job_search.dao.WorkExperienceInfoDao;
 import kg.attractor.job_search.dto.WorkExperienceInfoDto;
+import kg.attractor.job_search.exceptions.ResumeNotFoundException;
 import kg.attractor.job_search.model.WorkExperienceInfo;
+import kg.attractor.job_search.repository.ResumeRepository;
 import kg.attractor.job_search.repository.WorkExperienceInfoRepository;
 import kg.attractor.job_search.service.WorkExperienceService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkExperienceServiceImpl implements WorkExperienceService {
     private final WorkExperienceInfoRepository workExperienceInfoRepository;
+    private final ResumeRepository resumeRepository;
 
     @Override
     public WorkExperienceInfoDto create(WorkExperienceInfoDto workExperienceInfoDto){
@@ -23,6 +25,8 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                 .years(workExperienceInfoDto.getYears())
                 .responsibilities(workExperienceInfoDto.getResponsibilities())
                 .position(workExperienceInfoDto.getPosition())
+                .resume(resumeRepository.findById(workExperienceInfoDto.getResumeId())
+                        .orElseThrow(ResumeNotFoundException::new))
                 .build();
         workExperienceInfoRepository.save(workExperienceInfo);
         return convertToWorkExperienceInfoDto(workExperienceInfo);

@@ -1,16 +1,12 @@
 package kg.attractor.job_search.service.impl;
 
-import kg.attractor.job_search.dto.ResumeDto;
-import kg.attractor.job_search.dto.ResumeEditDto;
+import jakarta.transaction.Transactional;
+import kg.attractor.job_search.dto.*;
 import kg.attractor.job_search.exceptions.CategoryNotFoundException;
 import kg.attractor.job_search.exceptions.ResumeNotFoundException;
 import kg.attractor.job_search.exceptions.UserNotFoundException;
-import kg.attractor.job_search.model.Category;
-import kg.attractor.job_search.model.Resume;
-import kg.attractor.job_search.model.User;
-import kg.attractor.job_search.repository.CategoryRepository;
-import kg.attractor.job_search.repository.ResumeRepository;
-import kg.attractor.job_search.repository.UserRepository;
+import kg.attractor.job_search.model.*;
+import kg.attractor.job_search.repository.*;
 import kg.attractor.job_search.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +24,10 @@ public class ResumeServiceImpl implements ResumeService {
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final EducationInfoRepository educationInfoRepository;
+    private final WorkExperienceInfoRepository workExperienceInfoRepository;
+    private final ContactInfoRepository contactInfoRepository;
+    private final ContactTypeRepository contactTypeRepository;
 
     @Override
     public Page<ResumeDto> findAllResumes(Pageable page){
@@ -81,26 +83,115 @@ public class ResumeServiceImpl implements ResumeService {
                 .category(category)
                 .build();
 
-        resume = resumeRepository.save(resume);
+        final Resume createdResume = resumeRepository.save(resume);
+
+        if (resumeDto.getEducation() != null){
+            resumeDto.getEducation().forEach(eduDto ->{
+                EducationInfo edu = EducationInfo.builder()
+                        .resume(createdResume)
+                        .institution(eduDto.getInstitution())
+                        .program(eduDto.getProgram())
+                        .startDate(eduDto.getStartDate())
+                        .endDate(eduDto.getEndDate())
+                        .degree(eduDto.getDegree())
+                        .build();
+                educationInfoRepository.save(edu);
+            });
+        }
+        if (resumeDto.getWorkExperience() != null) {
+            resumeDto.getWorkExperience().forEach(expDto -> {
+                WorkExperienceInfo exp = WorkExperienceInfo.builder()
+                        .resume(createdResume)
+                        .years(expDto.getYears())
+                        .companyName(expDto.getCompanyName())
+                        .position(expDto.getPosition())
+                        .responsibilities(expDto.getResponsibilities())
+                        .build();
+                workExperienceInfoRepository.save(exp);
+            });
+        }
+
+        if (resumeDto.getContacts() != null) {
+            resumeDto.getContacts().forEach(cDto -> {
+
+                ContactType type = contactTypeRepository.findById(cDto.getTypeId())
+                        .orElseThrow(() -> new RuntimeException("Тип контакта не найден"));
+
+                ContactInfo contact = ContactInfo.builder()
+                        .resume(createdResume)
+                        .contactType(type)
+                        .contactValue(cDto.getContactValue())
+                        .build();
+
+                contactInfoRepository.save(contact);
+            });
+        }
 
         return convertToResumeDto(resume);
     }
 
+    @Override
+    @Transactional
     public void edit(Integer resumeId, ResumeEditDto dto) {
+
         Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new RuntimeException("Резюме не найдено"));
+                .orElseThrow(ResumeNotFoundException::new);
 
-        if (dto.getName() != null) resume.setName(dto.getName());
-        if (dto.getSalary() != null) resume.setSalary(dto.getSalary());
-        if (dto.getIsActive() != null) resume.setActive(dto.getIsActive());
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(CategoryNotFoundException::new);
 
-        if (dto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Категория не найдена"));
-            resume.setCategory(category);
+        resume.setName(dto.getName());
+        resume.setSalary(dto.getSalary());
+        resume.setCategory(category);
+        resume.setUpdateTime(LocalDateTime.now());
+
+        educationInfoRepository.deleteAllByResume_Id(resumeId);
+
+        if (dto.getEducation() != null) {
+            dto.getEducation().forEach(eduDto -> {
+                EducationInfo edu = EducationInfo.builder()
+                        .resume(resume)
+                        .institution(eduDto.getInstitution())
+                        .program(eduDto.getProgram())
+                        .startDate(eduDto.getStartDate())
+                        .endDate(eduDto.getEndDate())
+                        .degree(eduDto.getDegree())
+                        .build();
+                educationInfoRepository.save(edu);
+            });
         }
 
-        resume.setUpdateTime(LocalDateTime.now());
+        workExperienceInfoRepository.deleteAllByResume_Id((resumeId));
+
+        if (dto.getWorkExperience() != null) {
+            dto.getWorkExperience().forEach(expDto -> {
+                WorkExperienceInfo exp = WorkExperienceInfo.builder()
+                        .resume(resume)
+                        .years(expDto.getYears())
+                        .companyName(expDto.getCompanyName())
+                        .position(expDto.getPosition())
+                        .responsibilities(expDto.getResponsibilities())
+                        .build();
+                workExperienceInfoRepository.save(exp);
+            });
+        }
+
+        contactInfoRepository.deleteAllByResume_Id(resumeId);
+
+        if (dto.getContacts() != null) {
+            dto.getContacts().forEach(cDto -> {
+                ContactType type = contactTypeRepository.findById(cDto.getTypeId())
+                        .orElseThrow(() -> new RuntimeException("Тип контакта не найден"));
+
+                ContactInfo contact = ContactInfo.builder()
+                        .resume(resume)
+                        .contactType(type)
+                        .contactValue(cDto.getContactValue())
+                        .build();
+
+                contactInfoRepository.save(contact);
+            });
+        }
 
         resumeRepository.save(resume);
     }
@@ -120,14 +211,23 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public ResumeEditDto getForUpdate(Integer id) {
         Resume resume = resumeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Резюме не найдено"));
+                .orElseThrow(ResumeNotFoundException::new);
 
         return ResumeEditDto.builder()
                 .id(resume.getId())
                 .name(resume.getName())
-                .categoryId(resume.getCategory() != null ? resume.getCategory().getId() : null)
+                .categoryId(resume.getCategory().getId())
                 .salary(resume.getSalary())
                 .isActive(resume.isActive())
+                .education(resume.getEducations().stream()
+                        .map(this::convertEducationToDto)
+                        .collect(Collectors.toList()))
+                .workExperience(resume.getExperiences().stream()
+                        .map(this::convertWorkExperienceToDto)
+                        .collect(Collectors.toList()))
+                .contacts(resume.getContacts().stream()
+                        .map(c -> new ContactInfoDto( c.getId(), c.getContactType().getId(), c.getContactValue()))
+                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -135,7 +235,7 @@ public class ResumeServiceImpl implements ResumeService {
         resumeRepository.deleteById(resumeId);
     }
 
-    private ResumeDto convertToResumeDto (Resume resume){
+    private ResumeDto convertToResumeDto(Resume resume) {
 
         return ResumeDto.builder()
                 .id(resume.getId())
@@ -146,6 +246,56 @@ public class ResumeServiceImpl implements ResumeService {
                 .isActive(resume.isActive())
                 .createdDate(resume.getCreatedDate())
                 .updateTime(resume.getUpdateTime())
+                .education(
+                        resume.getEducations() != null
+                                ? resume.getEducations().stream()
+                                .map(this::convertEducationToDto)
+                                .collect(Collectors.toCollection(ArrayList::new))
+                                : new ArrayList<>()
+                )
+                .workExperience(
+                        resume.getExperiences() != null
+                                ? resume.getExperiences().stream()
+                                .map(this::convertWorkExperienceToDto)
+                                .collect(Collectors.toCollection(ArrayList::new))
+                                : new ArrayList<>()
+                )
+                .contacts(
+                        resume.getContacts() != null
+                                ? resume.getContacts().stream()
+                                .map(this::convertContactToDto)
+                                .collect(Collectors.toCollection(ArrayList::new))
+                                : new ArrayList<>()
+                )
+                .build();
+    }
+
+    private EducationInfoDto convertEducationToDto(EducationInfo edu) {
+        return EducationInfoDto.builder()
+                .id(edu.getId())
+                .institution(edu.getInstitution())
+                .program(edu.getProgram())
+                .startDate(edu.getStartDate())
+                .endDate(edu.getEndDate())
+                .degree(edu.getDegree())
+                .resumeId(edu.getResume().getId())
+                .build();
+    }
+    private WorkExperienceInfoDto convertWorkExperienceToDto(WorkExperienceInfo exp) {
+        return WorkExperienceInfoDto.builder()
+                .id(exp.getId())
+                .companyName(exp.getCompanyName())
+                .position(exp.getPosition())
+                .years(exp.getYears())
+                .responsibilities(exp.getResponsibilities())
+                .resumeId(exp.getResume().getId())
+                .build();
+    }
+    private ContactInfoDto convertContactToDto(ContactInfo contact) {
+        return ContactInfoDto.builder()
+                .id(contact.getId())
+                .typeId(contact.getContactType().getId())
+                .contactValue(contact.getContactValue())
                 .build();
     }
 }

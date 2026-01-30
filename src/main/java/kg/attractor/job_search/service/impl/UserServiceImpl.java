@@ -45,6 +45,9 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userRegisterDto.getRoleId())) {
             throw new InvalidRoleException("Неверная роль");
         }
+        if (userRepository.existsByPhoneNumber(userRegisterDto.getPhoneNumber())) {
+            throw new RuntimeException("Номер занят");
+        }
 
         Role role = roleRepository.findById(userRegisterDto.getRoleId())
                 .orElseThrow(RoleNotFoundException::new);

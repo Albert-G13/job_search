@@ -1,10 +1,8 @@
 package kg.attractor.job_search.service.impl;
 
-import kg.attractor.job_search.dao.EducationInfoDao;
 import kg.attractor.job_search.dto.EducationInfoDto;
 import kg.attractor.job_search.exceptions.ResumeNotFoundException;
 import kg.attractor.job_search.model.EducationInfo;
-import kg.attractor.job_search.model.Resume;
 import kg.attractor.job_search.repository.EducationInfoRepository;
 import kg.attractor.job_search.repository.ResumeRepository;
 import kg.attractor.job_search.service.EducationService;
@@ -21,9 +19,8 @@ public class EducationInfoServiceImpl implements EducationService {
     private final EducationInfoRepository educationInfoRepository;
 
     @Override
-    public EducationInfoDto create(EducationInfoDto educationInfoDto, Integer resumeId){
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(ResumeNotFoundException::new);
+    public EducationInfoDto create(EducationInfoDto educationInfoDto){
+
         EducationInfo educationInfo = EducationInfo
                 .builder()
                 .degree(educationInfoDto.getDegree())
@@ -31,7 +28,8 @@ public class EducationInfoServiceImpl implements EducationService {
                 .endDate(LocalDate.from(educationInfoDto.getEndDate()))
                 .institution(educationInfoDto.getInstitution())
                 .startDate(LocalDate.from(educationInfoDto.getStartDate()))
-                .resume(resume)
+                .resume(resumeRepository.findById(educationInfoDto.getResumeId())
+                        .orElseThrow(ResumeNotFoundException::new))
                 .build();
         educationInfoRepository.save(educationInfo);
         return educationInfoDto;
@@ -52,8 +50,8 @@ public class EducationInfoServiceImpl implements EducationService {
                 .institution(educationInfo.getInstitution())
                 .program(educationInfo.getProgram())
                 .degree(educationInfo.getDegree())
-                .endDate(educationInfo.getEndDate().atStartOfDay())
-                .startDate(educationInfo.getStartDate().atStartOfDay())
+                .endDate(educationInfo.getEndDate())
+                .startDate(educationInfo.getStartDate())
                 .build();
     }
 }

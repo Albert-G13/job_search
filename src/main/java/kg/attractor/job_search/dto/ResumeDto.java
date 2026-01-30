@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -32,7 +33,9 @@ public class ResumeDto {
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
     @Valid
-    private List<EducationInfoDto> education;
+    private List<EducationInfoDto> education = new ArrayList<>();
     @Valid
-    private List<WorkExperienceInfoDto> workExperience;
+    private List<WorkExperienceInfoDto> workExperience = new ArrayList<>();
+    @Valid
+    private List<ContactInfoDto> contacts = new ArrayList<>();
 }

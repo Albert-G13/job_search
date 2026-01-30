@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDto {
+public class ContactTypeDto {
     private Integer id;
-    private Integer parentId;
-    private String name;
+    private String type;
 }
