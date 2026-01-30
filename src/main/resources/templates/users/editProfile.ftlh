@@ -4,6 +4,9 @@
 <@main.layout ; spring>
     <div class="d-flex justify-content-center">
         <form action="/users/${user.id}/edit" method="post" enctype="multipart/form-data">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}">
+            </#if>
             <div class="mb-3">
                 <label for="name" class="form-label">Имя</label>
                 <@spring.formInput "userDto.name" 'class="form-control" id="name"' />

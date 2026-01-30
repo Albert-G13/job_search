@@ -23,12 +23,13 @@ public class UserRestController {
     }
     @PostMapping("/register")
     public HttpStatus createUser(@RequestBody @Valid UserDto userDto){
-        userService.create(userDto);
+//        userService.register(userDto);
         return HttpStatus.CREATED;
     }
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+//        return userService.getUserById(id);
+        return null;
     }
     @GetMapping("/search")
     public List<UserDto> searchUsers(@RequestParam(required = false) String name,

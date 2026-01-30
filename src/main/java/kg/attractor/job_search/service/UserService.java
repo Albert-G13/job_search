@@ -18,11 +18,9 @@ public interface UserService {
 
     List<UserDto> getAllUsers();
 
-    UserDto getUserById(Integer id);
-
     UserEditDto getUserEditById(Integer id);
 
-    void create(UserDto userDto);
-
     void edit(Integer id, UserEditDto userEditDto);
+
+    List<UserDto> getRespondedApplicantsByVacancyId(Integer vacancyId);
 }

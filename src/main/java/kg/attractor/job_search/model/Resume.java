@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,4 +32,13 @@ public class Resume {
     @ManyToOne
     @JoinColumn(name = "CATEGORY_ID")
     private Category category;
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EducationInfo> educations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkExperienceInfo> experiences = new ArrayList<>();
+
+    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContactInfo> contacts = new ArrayList<>();
 }
