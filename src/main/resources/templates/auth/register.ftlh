@@ -21,11 +21,21 @@
                 <@spring.formInput "userRegisterDto.phoneNumber" 'type="number" class="form-control" id="exampleInputPhoneNumber1" name="phoneNumber" aria-describedby="phoneNumberHelp"'/>
                 <@spring.showErrors "<p>" "error text-danger"/>
             </div>
-            <select class="form-select mb-3" name="roleId" aria-label="Default select example">
+<#--            <select class="form-select mb-3" name="roleId" aria-label="Default select example">-->
+<#--                <option value="">Выберите роль</option>-->
+<#--                <option value="1">Applicant</option>-->
+<#--                <option value="2">Employer</option>-->
+<#--            </select>-->
+            <div class="mb-3">
+            <select name="roleId" class="form-control">
                 <option value="">Выберите роль</option>
-                <option value="1">Applicant</option>
-                <option value="2">Employer</option>
+                <#list roles as role>
+                    <option value="${role.id}"> ${role.role}</option>
+                </#list>
             </select>
+            <@spring.bind "userRegisterDto.roleId" />
+            <@spring.showErrors "<br>" "text-danger small" />
+            </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
     </div>

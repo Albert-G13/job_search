@@ -31,7 +31,7 @@ public class UserRegisterDto {
     )
     @Pattern(regexp = "^\\d+$", message = "Should contain only digits")
     private String phoneNumber;
-    @NotNull
+    @NotNull(message = "Вы обязательно должны выбрать роль")
     private Integer roleId;
 }
 

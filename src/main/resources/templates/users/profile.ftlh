@@ -45,7 +45,8 @@
             <#if user.role.role == "APPLICANT">
                 <div class="row">
                     <h2>Мои Резюме</h2>
-                    <div class="d-flex justify-content-end mb-3">
+
+                    <div class="d-flex justify-content-end mb-4">
                         <form method="get" action="">
                             <select name="size" onchange="this.form.submit()" class="form-select form-select-sm" style="width: auto;">
                                 <option>Количество отображаемых карточек</option>
@@ -59,20 +60,27 @@
                             </#if>
                         </form>
                     </div>
-                    <#list resumes.getContent() as resume>
-                        <div class="card col-3 m-3" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">${resume.name}</h5>
-                                <h6 class="card-subtitle mb-2 text-body-secondary">${resume.salary}$</h6>
-                                <p class="card-text">Дата публикации: ${resume.createdDate.toLocalDate()}</p>
-                                <p class="card-text">Дата обновления: ${resume.updateTime.toLocalDate()}</p>
-                                <form action="/resumes/${resume.id}/update" method="post">
-                                    <button type="submit" class="btn btn-info mb-2">Обновить дату</button>
-                                </form>
-                                <a href="/resumes/#{resume.id}/edit" class="btn btn-success">Редактировать</a>
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                        <#list resumes.getContent() as resume>
+                            <div class="col">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">${resume.name}</h5>
+                                        <h6 class="card-subtitle mb-2 text-primary font-weight-bold">${resume.salary}$</h6>
+
+                                        <p class="card-text">Дата публикации: ${resume.createdDate.toLocalDate()}</p>
+                                        <p class="card-text mt-auto mb-3 text-muted small">Дата обновления: ${resume.updateTime.toLocalDate()}</p>
+                                        <div class="d-grid gap-2">
+                                            <form action="/resumes/${resume.id}/update" method="post" class="m-0">
+                                                <button type="submit" class="btn btn-outline-info btn-sm w-100">Обновить дату</button>
+                                            </form>
+                                            <a href="/resumes/#{resume.id}/edit" class="btn btn-success btn-sm">Редактировать</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </#list>
+                        </#list>
+                    </div>
                 </div>
                 <nav aria-label="Page navigation" class="mt-5">
                     <ul class="pagination justify-content-center">
@@ -112,10 +120,11 @@
             <#else>
                 <div class="row">
                     <h2>Мои Вакансии</h2>
-                    <div class="d-flex justify-content-end mb-3">
+
+                    <div class="d-flex justify-content-end mb-4">
                         <form method="get" action="">
                             <select name="size" onchange="this.form.submit()" class="form-select form-select-sm" style="width: auto;">
-                                <option>Количество отображаемых карточек</option>
+                                <option disabled>Количество отображаемых карточек</option>
                                 <option value="8" ${ (vacancies.size == 8)?string('selected', '') }>Отображается 8 карточек</option>
                                 <option value="12" ${ (vacancies.size == 12)?string('selected', '') }>Отображается 12 карточек</option>
                                 <option value="16" ${ (vacancies.size == 16)?string('selected', '') }>Отображается 16 карточек</option>
@@ -126,21 +135,32 @@
                             </#if>
                         </form>
                     </div>
-                    <#list vacancies.getContent() as vacancy>
-                        <div class="card col-3 m-3" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">${vacancy.name}</h5>
-                                <h6 class="card-subtitle mb-2 text-body-secondary">${vacancy.salary}$</h6>
-                                <p class="card-text">${vacancy.description}</p>
-                                <p class="card-text">Дата обновления: ${vacancy.updateTime.toLocalDate()}</p>
-                                <form action="/vacancies/${vacancy.id}/update" method="post">
-                                    <button type="submit" class="btn btn-info mb-2">Обновить</button>
-                                </form>
-                                <a href="/vacancies/#{vacancy.id}/edit" class="btn btn-success">Редактировать</a>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                        <#list vacancies.getContent() as vacancy>
+                            <div class="col">
+                                <div class="card h-100"> <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">${vacancy.name}</h5>
+                                        <h6 class="card-subtitle mb-2 text-primary font-weight-bold">${vacancy.salary}$</h6>
+
+                                        <p class="card-text">${vacancy.description}</p>
+                                        <p class="card-text mt-auto mb-3 text-muted small">
+                                            Дата обновления: ${vacancy.updateTime.toLocalDate()}
+                                        </p>
+
+                                        <div class="d-grid gap-2">
+                                            <form action="/vacancies/${vacancy.id}/update" method="post" class="m-0">
+                                                <button type="submit" class="btn btn-outline-info btn-sm w-100">Обновить</button>
+                                            </form>
+                                            <a href="/vacancies/${vacancy.id}/edit" class="btn btn-success btn-sm">Редактировать</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </#list>
+                        </#list>
+                    </div>
                 </div>
+
                 <nav aria-label="Page navigation" class="mt-5">
                     <ul class="pagination justify-content-center">
 
