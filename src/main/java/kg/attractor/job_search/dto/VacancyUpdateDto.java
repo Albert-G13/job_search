@@ -25,11 +25,11 @@ public class VacancyUpdateDto {
     @Positive
     private Float salary;
 
-    @Min(0)
+    @Min(value = 0, message = "опыт работы не должен быть отрицательным или пустым")
     private Integer expFrom;
 
-    @Min(0)
+    @Min(value = 0, message = "опыт работы не должен быть отрицательным или пустым")
     private Integer expTo;
 
-    private Boolean isActive;
+    private Boolean active;
 }

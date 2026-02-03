@@ -4,21 +4,23 @@
         <form method="get" class="d-flex gap-2">
             <select name="sort" onchange="this.form.submit()" class="form-select w-auto">
                 <#assign s = RequestParameters.sort!"" >
-                <option value="" disabled ${ (s == "")?string('selected', '')}>Выберите сортировку</option>
                 <option value="createdDate,desc" ${(s == "createdDate,desc")?string('selected','')}>По дате публикации (сначала новые)</option>
                 <option value="responds,desc" ${(s == "responds,desc")?string('selected','')}>По количеству откликов (по убыванию)</option>
             </select>
-            <input type="hidden" name="size" value="16">
+            <input type="hidden" name="size" value="3">
         </form>
     </div>
     <div class="row">
         <#list vacancies.getContent() as vacancy>
-            <div class="card col-3 m-3" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">${vacancy.name}</h5>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">${vacancy.salary}$</h6>
-                    <p class="card-text">${vacancy.description}</p>
-                </div>
+            <div class="card col-3 m-3" style="width: 100%;">
+                <a href="#" class="text-reset text-decoration-none">
+                    <div class="card-body">
+                        <h5 class="card-title">${vacancy.name}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">Зарплата: ${vacancy.salary}$</h6>
+                        <p class="card-text">Описание: ${vacancy.description}</p>
+                        <p class="card-text">Дата публикации: ${vacancy.createdDate.toLocalDate()}</p>
+                    </div>
+                </a>
             </div>
         </#list>
     </div>

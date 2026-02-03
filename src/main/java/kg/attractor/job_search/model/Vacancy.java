@@ -22,7 +22,8 @@ public class Vacancy {
     private float salary;
     private int expFrom;
     private int expTo;
-    private boolean isActive;
+    @Column(name = "is_active")
+    private boolean active;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
 
