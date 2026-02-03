@@ -3,9 +3,12 @@ package kg.attractor.job_search.controller;
 import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.VacancyDto;
 import kg.attractor.job_search.dto.VacancyUpdateDto;
+import kg.attractor.job_search.service.CategoryService;
 import kg.attractor.job_search.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +20,10 @@ import org.springframework.web.bind.annotation.*;
 public class VacancyController {
 
     private final VacancyService vacancyService;
+    private final CategoryService categoryService;
 
     @GetMapping
-    public String getVacancies(Pageable page, Model model){
+    public String getVacancies(@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 3) Pageable page, Model model){
         model.addAttribute("vacancies", vacancyService.findAllVacancies(page));
         return "vacancies/index";
     }
@@ -28,17 +32,17 @@ public class VacancyController {
     public String createGet(Model model, @PathVariable Integer authorId) {
         model.addAttribute("vacancy", new VacancyDto());
         model.addAttribute("authorId", authorId);
+        model.addAttribute("categories", categoryService.findAll());
         return "vacancies/create";
     }
 
     @PostMapping("/create/{authorId}")
     public String createPost(@Valid @ModelAttribute("vacancy") VacancyDto dto,BindingResult bindingResult, @PathVariable Integer authorId, Model model) {
-
+        model.addAttribute("categories", categoryService.findAll());
         if (bindingResult.hasErrors()){
             model.addAttribute("authorId", authorId);
             return "vacancies/create";
         }
-
         vacancyService.create(dto, authorId);
         return "redirect:/vacancies";
     }
@@ -46,6 +50,7 @@ public class VacancyController {
     @GetMapping("/{id}/edit")
     public String editGet(@PathVariable Integer id, Model model) {
         model.addAttribute("vacancy", vacancyService.getForUpdate(id));
+        model.addAttribute("categories", categoryService.findAll());
         return "vacancies/edit";
     }
 
@@ -56,7 +61,7 @@ public class VacancyController {
             model.addAttribute("vacancy", dto);
             return "vacancies/edit";
         }
-
+        model.addAttribute("categories", categoryService.findAll());
         vacancyService.edit(id, dto);
         return "redirect:/vacancies";
     }

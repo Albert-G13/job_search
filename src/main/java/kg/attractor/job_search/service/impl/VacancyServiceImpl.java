@@ -1,11 +1,8 @@
 package kg.attractor.job_search.service.impl;
 
-import kg.attractor.job_search.dao.VacancyDao;
 import kg.attractor.job_search.dto.VacancyDto;
 import kg.attractor.job_search.dto.VacancyUpdateDto;
-import kg.attractor.job_search.exceptions.CategoryNotFoundException;
-import kg.attractor.job_search.exceptions.UserNotFoundException;
-import kg.attractor.job_search.exceptions.VacancyNotFoundException;
+import kg.attractor.job_search.exceptions.*;
 import kg.attractor.job_search.model.Category;
 import kg.attractor.job_search.model.User;
 import kg.attractor.job_search.model.Vacancy;
@@ -55,14 +52,17 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public List<VacancyDto> getAllVacancies() {
-        List<Vacancy> vacancies = vacancyRepository.findAll();
-        return vacancies.stream().map(this::convertToVacancyDto).toList();
+        return vacancyRepository.findAll().stream()
+                .filter(Vacancy::isActive)
+                .map(this::convertToVacancyDto)
+                .toList();
     }
 
     @Override
     public List<VacancyDto> getVacanciesByRespondedId(Integer applicantId) {
-        List<Vacancy> vacancies = vacancyRepository.findByRespondedApplicantId(applicantId);
-        return vacancies.stream().map(this::convertToVacancyDto).toList();
+        return vacancyRepository.findByRespondedApplicantId(applicantId).stream()
+                .map(this::convertToVacancyDto)
+                .toList();
     }
 
     @Override
@@ -84,12 +84,16 @@ public class VacancyServiceImpl implements VacancyService {
         Vacancy vacancy = vacancyRepository.findById(id)
                 .orElseThrow(VacancyNotFoundException::new);
 
+        if (dto.getExpFrom() > dto.getExpTo()) {
+            throw new WorkExperienceDateException();
+        }
+
         if (dto.getName() != null) vacancy.setName(dto.getName());
         if (dto.getDescription() != null) vacancy.setDescription(dto.getDescription());
         if (dto.getSalary() != null) vacancy.setSalary(dto.getSalary());
         if (dto.getExpFrom() != null) vacancy.setExpFrom(dto.getExpFrom());
         if (dto.getExpTo() != null) vacancy.setExpTo(dto.getExpTo());
-        if (dto.getIsActive() != null) vacancy.setActive(dto.getIsActive());
+        if (dto.getActive() != null) vacancy.setActive(dto.getActive());
 
         vacancy.setUpdateTime(LocalDateTime.now());
 
@@ -103,11 +107,11 @@ public class VacancyServiceImpl implements VacancyService {
                 .orElseThrow(UserNotFoundException::new);
 
         if (!"EMPLOYER".equals(author.getRole().getRole())){
-            throw new IllegalStateException("Только работодатель может создавать вакансии");
+            throw new InvalidRoleEmployerException();
         }
 
         if (vacancyDto.getExpFrom() > vacancyDto.getExpTo()) {
-            throw new IllegalArgumentException("Начало работы не может быть больше конца работы");
+            throw new WorkExperienceDateException();
         }
         Category category = categoryRepository.findById(vacancyDto.getCategoryId())
                 .orElseThrow(CategoryNotFoundException::new);
@@ -115,7 +119,7 @@ public class VacancyServiceImpl implements VacancyService {
         Vacancy vacancy = Vacancy.builder()
                 .name(vacancyDto.getName())
                 .salary(vacancyDto.getSalary())
-                .isActive(true)
+                .active(true)
                 .description(vacancyDto.getDescription())
                 .expFrom(vacancyDto.getExpFrom())
                 .expTo(vacancyDto.getExpTo())
@@ -146,7 +150,7 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public VacancyUpdateDto getForUpdate(Integer id) {
         Vacancy vacancy = vacancyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vacancy not found"));
+                .orElseThrow(VacancyNotFoundException::new);
 
         return VacancyUpdateDto.builder()
                 .id(vacancy.getId())
@@ -156,7 +160,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())
                 .categoryId(vacancy.getCategory() != null ? vacancy.getCategory().getId() : null)
-                .isActive(vacancy.isActive())
+                .active(vacancy.isActive())
                 .build();
     }
 
@@ -170,7 +174,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .salary(vacancy.getSalary())
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())
-                .isActive(vacancy.isActive())
+                .active(vacancy.isActive())
                 .createdDate(vacancy.getCreatedDate())
                 .updateTime(vacancy.getUpdateTime())
                 .build();

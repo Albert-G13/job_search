@@ -37,9 +37,19 @@
                     <@spring.showErrors "<br>" "text-danger small" />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Категория (ID)</label>
-                    <@spring.formInput "vacancy.categoryId" 'type="number" class="form-control"'/>
-                    <@spring.showErrors "<br>" "text-danger small" />
+                    <div class="mb-3">
+                        <label class="form-label">Категория</label>
+                        <select name="categoryId" class="form-control">
+                            <#list categories as category>
+                                <option value="${category.id}"
+                                        <#if (vacancy.categoryId?? && vacancy.categoryId == category.id)>selected</#if>>
+                                    ${category.name}
+                                </option>
+                            </#list>
+                        </select>
+                        <@spring.bind "vacancy.categoryId" />
+                        <@spring.showErrors "<br>" "text-danger small" />
+                    </div>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Опубликовать вакансию</button>

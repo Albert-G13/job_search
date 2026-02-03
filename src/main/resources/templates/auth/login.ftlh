@@ -82,6 +82,7 @@
 
                             </button>
 
+                            <a class="btn btn-link mb-4" href="/auth/forgot_password">Forgot Password?</a>
 
                         </form>
 

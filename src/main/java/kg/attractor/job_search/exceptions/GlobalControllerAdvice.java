@@ -21,6 +21,39 @@ public class GlobalControllerAdvice {
         model.addAttribute("details", request);
         return "errors/error";
     }
+    @ExceptionHandler(exception = InvalidRoleEmployerException.class)
+    public String invalidRoleEmployer(Model model, InvalidRoleEmployerException e){
+        model.addAttribute("status", HttpStatus.FORBIDDEN.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
+
+    @ExceptionHandler(InvalidRoleApplicantException.class)
+    public String invalidRoleApplicant(Model model, InvalidRoleApplicantException e){
+        model.addAttribute("status", HttpStatus.FORBIDDEN.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
+
+
+    @ExceptionHandler(WorkExperienceDateException.class)
+    public String workExperienceDate(WorkExperienceDateException e,Model model){
+        model.addAttribute("status", HttpStatus.CONFLICT.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
+    @ExceptionHandler(NumberAlreadyExistsException.class)
+    public String numberAlreadyExists(NumberAlreadyExistsException e,Model model){
+        model.addAttribute("status", HttpStatus.CONFLICT.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public String emailAlreadyExists(UserAlreadyExistsException e,Model model){
+        model.addAttribute("status", HttpStatus.CONFLICT.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDenied(Model model) {
         model.addAttribute("status", HttpStatus.FORBIDDEN.value());

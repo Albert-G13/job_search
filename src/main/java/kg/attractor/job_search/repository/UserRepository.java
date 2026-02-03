@@ -25,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "JOIN RespondedApplicant ra ON ra.resume.id = r.id " +
             "WHERE ra.vacancy.id = :vacancyId")
     List<User> findRespondedApplicantsByVacancyId(Integer vacancyId);
+
+    Optional<User> findByResetPasswordToken(String token);
 }

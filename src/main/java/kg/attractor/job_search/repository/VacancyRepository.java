@@ -14,6 +14,8 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Integer> {
 
     Page<Vacancy> findByUser_Id(Integer userId, Pageable pageable);
 
+    Page<Vacancy> findAllByActive(boolean active, Pageable pageable);
+
     @Query("SELECT v FROM Vacancy v " +
             "LEFT JOIN RespondedApplicant ra ON ra.vacancy = v " +
             "GROUP BY v " +

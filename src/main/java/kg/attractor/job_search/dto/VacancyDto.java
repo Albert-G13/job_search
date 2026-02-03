@@ -22,13 +22,13 @@ public class VacancyDto {
     @NotBlank
     @Size(min = 3, max = 2000)
     private String description;
-    @Positive
+    @Positive(message = "зарплата должна быть положительным числом")
     private float salary;
-    @Min(0)
+    @Min(value = 0, message = "опыт работы не должен быть отрицательным или пустым")
     private int expFrom;
-    @Min(0)
+    @Min(value = 0, message = "опыт работы не должен быть отрицательным или пустым")
     private int expTo;
-    private boolean isActive;
+    private boolean active;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
 }

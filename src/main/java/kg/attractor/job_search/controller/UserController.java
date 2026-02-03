@@ -8,6 +8,8 @@ import kg.attractor.job_search.service.UserService;
 import kg.attractor.job_search.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +27,7 @@ public class UserController {
     private final ResumeService resumeService;
 
     @GetMapping("{id}/profile")
-    public String profile(Model model, @PathVariable Integer id, Pageable page){
+    public String profile(Model model, @PathVariable Integer id,@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 4) Pageable page){
         model.addAttribute("userDto", userService.getUserEditById(id));
         model.addAttribute("vacancies", vacancyService.findByAuthorId(id, page));
         model.addAttribute("resumes", resumeService.findByApplicantId(id, page));

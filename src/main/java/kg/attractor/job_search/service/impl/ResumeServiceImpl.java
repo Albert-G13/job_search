@@ -2,9 +2,7 @@ package kg.attractor.job_search.service.impl;
 
 import jakarta.transaction.Transactional;
 import kg.attractor.job_search.dto.*;
-import kg.attractor.job_search.exceptions.CategoryNotFoundException;
-import kg.attractor.job_search.exceptions.ResumeNotFoundException;
-import kg.attractor.job_search.exceptions.UserNotFoundException;
+import kg.attractor.job_search.exceptions.*;
 import kg.attractor.job_search.model.*;
 import kg.attractor.job_search.repository.*;
 import kg.attractor.job_search.service.ResumeService;
@@ -67,7 +65,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .orElseThrow(UserNotFoundException::new);
 
         if (!"APPLICANT".equals(applicant.getRole().getRole())) {
-            throw new IllegalStateException("Только соискатель может создавать резюме");
+            throw new InvalidRoleApplicantException();
         }
 
         Category category = categoryRepository.findById(resumeDto.getCategoryId())
@@ -76,7 +74,7 @@ public class ResumeServiceImpl implements ResumeService {
         Resume resume = Resume.builder()
                 .name(resumeDto.getName())
                 .salary(resumeDto.getSalary())
-                .isActive(true)
+                .active(true)
                 .createdDate(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .user(applicant)
@@ -144,6 +142,7 @@ public class ResumeServiceImpl implements ResumeService {
         resume.setSalary(dto.getSalary());
         resume.setCategory(category);
         resume.setUpdateTime(LocalDateTime.now());
+        resume.setActive(dto.getActive() != null && dto.getActive());
 
         educationInfoRepository.deleteAllByResume_Id(resumeId);
 
@@ -181,7 +180,7 @@ public class ResumeServiceImpl implements ResumeService {
         if (dto.getContacts() != null) {
             dto.getContacts().forEach(cDto -> {
                 ContactType type = contactTypeRepository.findById(cDto.getTypeId())
-                        .orElseThrow(() -> new RuntimeException("Тип контакта не найден"));
+                        .orElseThrow(TypeOfContactNotFoundException::new);
 
                 ContactInfo contact = ContactInfo.builder()
                         .resume(resume)
@@ -218,7 +217,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .name(resume.getName())
                 .categoryId(resume.getCategory().getId())
                 .salary(resume.getSalary())
-                .isActive(resume.isActive())
+                .active(resume.isActive())
                 .education(resume.getEducations().stream()
                         .map(this::convertEducationToDto)
                         .collect(Collectors.toList()))
@@ -243,7 +242,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .name(resume.getName())
                 .categoryId(resume.getCategory().getId())
                 .salary(resume.getSalary())
-                .isActive(resume.isActive())
+                .active(resume.isActive())
                 .createdDate(resume.getCreatedDate())
                 .updateTime(resume.getUpdateTime())
                 .education(
