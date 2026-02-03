@@ -108,14 +108,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="form-check form-switch mb-4">
-                <input class="form-check-input" type="checkbox" name="isActive" id="activeSwitch"
-                        ${resume.active?string('checked', '')}>
-                <label class="form-check-label" for="activeSwitch">Резюме активно</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Опубликовать</button>
+            <@spring.formCheckbox "resume.active", "class='form-check-input' id='activeSwitch'" />
+            <label class="form-check-label" for="activeSwitch">Резюме активно</label>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
         </form>
     </div>
 </@main.layout>

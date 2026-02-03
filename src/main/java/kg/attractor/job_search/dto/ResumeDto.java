@@ -29,7 +29,7 @@ public class ResumeDto {
     private String name;
     @Positive(message = "Salary must be positive")
     private float salary;
-    private boolean isActive;
+    private boolean active;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
     @Valid

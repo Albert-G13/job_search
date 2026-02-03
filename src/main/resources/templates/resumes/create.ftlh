@@ -99,6 +99,8 @@
                                 <option value="${type.id}">${type.type}</option>
                             </#list>
                         </select>
+                        <@spring.bind "type.id" />
+                        <@spring.showErrors "<br>" "text-danger small" />
                     </div>
                     <div class="col-8">
                         <label>Значение (номер/ссылка)</label>

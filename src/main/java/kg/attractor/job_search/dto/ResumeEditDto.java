@@ -26,7 +26,7 @@ public class ResumeEditDto {
     private String name;
     @Positive(message = "Salary must be positive")
     private Float salary;
-    private Boolean isActive;
+    private Boolean active;
     @Valid
     private List<EducationInfoDto> education = new ArrayList<>();
     @Valid
