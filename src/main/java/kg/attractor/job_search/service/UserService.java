@@ -12,9 +12,15 @@ import java.util.List;
 
 public interface UserService {
 
+    void updateLanguage(String email, String lang);
+
     UserDto findUserById(Integer id);
 
+    UserDto findUserByEmail(String email);
+
     void register(UserRegisterDto userRegisterDto);
+
+    boolean existsByPhoneNumber(String number);
 
     boolean existsByEmail(String email);
 
@@ -22,7 +28,7 @@ public interface UserService {
 
     List<UserDto> getAllUsers();
 
-    UserEditDto getUserEditById(Integer id);
+    UserEditDto getUserEditById(Integer id, String email);
 
     void edit(Integer id, UserEditDto userEditDto);
 
@@ -33,4 +39,6 @@ public interface UserService {
     User getByResetPasswordToken(String token);
 
     void updatePassword(User user, String newPassword);
+
+    String getLanguageByEmail(String email);
 }
