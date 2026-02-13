@@ -33,4 +33,5 @@ public class User {
 
     private boolean enabled;
     private String resetPasswordToken;
+    private String language;
 }
