@@ -54,17 +54,22 @@
                             aria-expanded="false">
                         <@spring.message "layout.nav.lang.change"/>
                     </button>
+                    <#assign savedToken = (RequestParameters.token)!(resetPassword.token)!(token)!"" />
+
                     <ul class="dropdown-menu">
                         <#assign cleanQuery = (springMacroRequestContext.queryString!'')?replace('lang=[a-z]{2}', '', 'r')?replace('(^&|&$|(?<=&)&)', '', 'r')>
+                        <#assign finalParams = cleanQuery>
+                        <#if !finalParams?contains("token=") && savedToken?has_content>
+                            <#assign finalParams = "token=" + savedToken + (finalParams?has_content?then("&" + finalParams, ""))>
+                        </#if>
+
                         <li>
-                            <a class="dropdown-item" href="?${cleanQuery}<#if cleanQuery?has_content>&</#if>lang=en">
-                                <@spring.message "layout.nav.lang_en"/>
-                            </a>
+                            <a class="dropdown-item"
+                               href="?${finalParams}<#if finalParams?has_content>&</#if>lang=en"><@spring.message "layout.nav.lang_en"/></a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="?${cleanQuery}<#if cleanQuery?has_content>&</#if>lang=ru">
-                                <@spring.message "layout.nav.lang_ru"/>
-                            </a>
+                            <a class="dropdown-item"
+                               href="?${finalParams}<#if finalParams?has_content>&</#if>lang=ru"><@spring.message "layout.nav.lang_ru"/></a>
                         </li>
                     </ul>
                 </div>
