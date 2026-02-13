@@ -4,22 +4,23 @@
 <@main.layout ; spring>
     <div class="d-flex justify-content-center mt-5">
         <form action="/resumes/create/${user.id}" method="post" style="width: 100%; max-width: 500px;">
-            <h3 class="mb-4">Создать резюме</h3>
+            <h3 class="mb-4"><@spring.message "resumes.create.header"/></h3>
             <#if _csrf??>
-                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}">
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}">
             </#if>
             <div class="mb-3">
-                <label class="form-label">Название резюме (должность)</label>
+                <label class="form-label"><@spring.message "resumes.edit.title"/></label>
                 <@spring.formInput "resume.name" 'class="form-control" placeholder="Java Developer"' />
                 <@spring.showErrors "<br>" "text-danger small" />
             </div>
             <div class="mb-3">
-                <label class="form-label">Желаемая зарплата ($)</label>
+                <label class="form-label"><@spring.message "resumes.info.salary"/> ($)</label>
                 <@spring.formInput "resume.salary" 'type="number" class="form-control"' />
                 <@spring.showErrors "<br>" "text-danger small" />
             </div>
             <div class="mb-3">
-                <label class="form-label">Категория</label>
+                <label class="form-label"><@spring.message "resumes.edit.category"/></label>
                 <select name="categoryId" class="form-control">
                     <#list categories as category>
                         <option value="${category.id}"
@@ -32,84 +33,87 @@
                 <@spring.showErrors "<br>" "text-danger small" />
             </div>
 
-            <h4 class="mb-3 text-secondary">Образование</h4>
+            <h4 class="mb-3 text-secondary"><@spring.message "resumes.info.education"/></h4>
             <div class="p-3 mb-3 ">
                 <div class="mb-3">
-                    <label>Учебное заведение</label>
+                    <label><@spring.message "resumes.edit.institution"/></label>
                     <@spring.formInput "resume.education[0].institution" 'class="form-control"' />
                     <@spring.showErrors "<br>" "text-danger small" />
                 </div>
                 <div class="mb-3">
-                    <label>Программа обучения</label>
+                    <label><@spring.message "resumes.edit.eduProgram"/></label>
                     <@spring.formInput "resume.education[0].program" 'class="form-control"' />
                     <@spring.showErrors "<br>" "text-danger small" />
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label>Начало</label>
+                        <label><@spring.message "resumes.edit.esuStart"/></label>
                         <@spring.formInput "resume.education[0].startDate" 'class="form-control"' "date"/>
                         <@spring.showErrors "<br>" "text-danger small" />
                     </div>
                     <div class="col">
-                        <label>Конец</label>
+                        <label><@spring.message "resumes.edit.esuEnd"/></label>
                         <@spring.formInput "resume.education[0].endDate" 'class="form-control"' "date" />
                         <@spring.showErrors "<br>" "text-danger small" />
                     </div>
                 </div>
                 <div class="mb-2">
-                    <label>Степень</label>
+                    <label><@spring.message "resumes.edit.degree"/></label>
                     <@spring.formInput "resume.education[0].degree" 'class="form-control"' />
                     <@spring.showErrors "<br>" "text-danger small" />
                 </div>
             </div>
 
-            <h4 class="mb-3 text-secondary">Опыт работы</h4>
+            <h4 class="mb-3 text-secondary"><@spring.message "resumes.info.workExp"/></h4>
             <div class="p-3 mb-3">
                 <div class="row mb-3">
                     <div class="col-4">
-                        <label>Стаж (лет)</label>
+                        <label><@spring.message "resumes.info.exp"/> (<@spring.message "vacancies.info.body.years"/>)</label>
                         <@spring.formInput "resume.workExperience[0].years" 'type="number" class="form-control"' />
                         <@spring.showErrors "<br>" "text-danger small" />
                     </div>
                     <div class="col-8">
-                        <label>Компания</label>
+                        <label><@spring.message "resumes.edit.company"/></label>
                         <@spring.formInput "resume.workExperience[0].companyName" 'class="form-control"' />
                         <@spring.showErrors "<br>" "text-danger small" />
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label>Ваша позиция</label>
+                    <label><@spring.message "resumes.edit.position"/></label>
                     <@spring.formInput "resume.workExperience[0].position" 'class="form-control"' />
                     <@spring.showErrors "<br>" "text-danger small" />
                 </div>
                 <div class="mb-2">
-                    <label>Обязанности</label>
+                    <label><@spring.message "resumes.edit.responsibilities"/></label>
                     <@spring.formTextarea "resume.workExperience[0].responsibilities" 'class="form-control" rows="3"' />
                     <@spring.showErrors "<br>" "text-danger small" />
                 </div>
             </div>
 
-            <h4 class="mb-3 text-secondary">Контакты</h4>
+            <h4 class="mb-3 text-secondary"><@spring.message "resumes.edit.contacts"/></h4>
             <div class="p-3 mb-3">
                 <div class="row">
                     <div class="col-4">
-                        <label>Тип связи</label>
+                        <label><@spring.message "resumes.edit.contactType"/></label>
                         <select name="contacts[0].typeId" class="form-control">
                             <#list contactTypes as type>
                                 <option value="${type.id}">${type.type}</option>
                             </#list>
                         </select>
-                        <@spring.bind "type.id" />
+                        <@spring.bind "resume.contacts[0].typeId" />
                         <@spring.showErrors "<br>" "text-danger small" />
                     </div>
                     <div class="col-8">
-                        <label>Значение (номер/ссылка)</label>
+                        <label><@spring.message "resumes.edit.contactValue"/></label>
                         <@spring.formInput "resume.contacts[0].contactValue" 'class="form-control" placeholder="996700700700"' />
                         <@spring.showErrors "<br>" "text-danger small" />
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Опубликовать</button>
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary"><@spring.message "resumes.create.buttonPost"/></button>
+                <a href="/users/#{user.id}/profile" class="btn btn-outline-secondary"><@spring.message "resumes.edit.buttonCancel"/></a>
+            </div>
         </form>
     </div>
 </@main.layout>

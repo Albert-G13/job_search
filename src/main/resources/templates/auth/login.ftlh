@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
+<@main.layout ; spring>
     <section class=" text-center text-lg-start">
 
         <style>
@@ -51,39 +51,28 @@
 
                         <form id="login-form" action="/auth/login" method="post">
                             <#if _csrf??>
-                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}">
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                       value="${(_csrf.token)!'csrf-token'}">
                             </#if>
-                            <!-- Email input -->
+
+                            <#if RequestParameters.error??>
+                                <div class="alert alert-danger">
+                                    <@spring.message "login.error"/>
+                                </div>
+                            </#if>
 
                             <div data-mdb-input-init class="form-outline mb-4">
-
-                                <input type="email" id="form2Example1" class="form-control" name="username"/>
-
-                                <label class="form-label" for="form2Example1">Email address</label>
-
+                                <label class="form-label" for="form2Example1"><@spring.message "users.user.email"/></label>
+                                <@spring.formInput "loginDto.username" 'type="email" id="form2Example1" class="form-control"'/>
                             </div>
-
-
-                            <!-- Password input -->
 
                             <div data-mdb-input-init class="form-outline mb-4">
-
-                                <input type="password" id="form2Example2" class="form-control" name="password"/>
-
-                                <label class="form-label" for="form2Example2">Password</label>
-
+                                <label class="form-label" for="form2Example2"><@spring.message "auth.register.password"/></label>
+                                <@spring.formPasswordInput "loginDto.password" 'type="password" id="form2Example2" class="form-control"'/>
                             </div>
 
-                            <!-- Submit button -->
-
-                            <button type="submit" data-mdb-button-init data-mdb-ripple-init
-
-                                    class="btn btn-primary btn-block mb-4">Sign in
-
-                            </button>
-
-                            <a class="btn btn-link mb-4" href="/auth/forgot_password">Forgot Password?</a>
-
+                            <button type="submit" class="btn btn-primary btn-block mb-4"><@spring.message "auth.login.button.signIn"/></button>
+                            <a class="btn btn-link mb-4" href="/auth/forgot_password"><@spring.message "auth.login.button.forgotPass"/></a>
                         </form>
 
 
