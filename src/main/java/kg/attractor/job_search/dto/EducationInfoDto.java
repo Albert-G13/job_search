@@ -19,16 +19,17 @@ public class EducationInfoDto {
     private Integer id;
     private Integer resumeId;
     @NotBlank(message = "Institution is required")
-    @Size(max = 100)
+    @Size(min = 3, max = 100)
     private String institution;
     @NotBlank(message = "Program is required")
-    @Size(max = 100)
+    @Size(min = 3, max = 100)
     private String program;
     @NotNull(message = "Start date is required")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "End date is required")
     private LocalDate endDate;
+    @Size(min = 3, max = 100)
     @NotBlank(message = "Degree is required")
     private String degree;
 }

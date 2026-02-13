@@ -17,13 +17,14 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MainController {
     private final VacancyService vacancyService;
+
     @GetMapping("/")
     public String roots(Authentication authentication, @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 3) Pageable page, Model model) {
         if (authentication != null) {
             if (authentication.getAuthorities().stream()
                     .anyMatch(a -> Objects.equals(a.getAuthority(), "EMPLOYER"))) {
                 return "redirect:/resumes";
-            }else {
+            } else {
                 return "redirect:/vacancies";
             }
         }

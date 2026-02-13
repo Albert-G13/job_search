@@ -30,7 +30,8 @@ public class ResumeRestController {
     }
     @GetMapping("/resumes/{id}")
     public ResumeDto getResumeById(@PathVariable Integer id){
-        return resumeService.getById(id);
+//        return resumeService.getById(id, email);
+        return null;
     }
     @PostMapping("/{applicantId}/resumes")
     public ResumeDto createResume(@PathVariable Integer applicantId, @RequestBody @Valid ResumeDto resumeDto){

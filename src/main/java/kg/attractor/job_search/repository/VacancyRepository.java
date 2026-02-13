@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public interface VacancyRepository extends JpaRepository<Vacancy, Integer> {
 
+    Page<Vacancy> findAllByActiveIsTrue(Pageable pageable);
+
     Page<Vacancy> findByUser_Id(Integer userId, Pageable pageable);
 
     Page<Vacancy> findAllByActive(boolean active, Pageable pageable);

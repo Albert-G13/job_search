@@ -9,14 +9,14 @@ import java.util.*;
 @Service
 public class ErrorService {
 
-    public CustomErrorResponse makeResponse(Exception e){
+    public CustomErrorResponse makeResponse(Exception e) {
         String msg = e.getMessage();
         CustomErrorResponse errorResponse = new CustomErrorResponse();
         errorResponse.setError(msg);
-        Map<String, List<String>> reasons = new  HashMap<> ();
+        Map<String, List<String>> reasons = new HashMap<>();
         reasons.put("reasons", Arrays.stream(e.getStackTrace())
-                        .map(StackTraceElement::toString)
-                                .toList());
+                .map(StackTraceElement::toString)
+                .toList());
         errorResponse.setReasons(reasons);
         return errorResponse;
     }
@@ -28,7 +28,7 @@ public class ErrorService {
                 .forEach(e -> {
                     List<String> errors = new ArrayList<>();
                     errors.add(e.getDefaultMessage());
-                    if (!reasons.containsKey(e.getField())){
+                    if (!reasons.containsKey(e.getField())) {
                         reasons.put(e.getField(), errors);
                     }
                 });

@@ -26,7 +26,7 @@ public class ImageServiceImpl implements ImageService {
 
     @SneakyThrows
     @Override
-    public String saveUploadFile(MultipartFile file, String subDir){
+    public String saveUploadFile(MultipartFile file, String subDir) {
         String uuidFile = UUID.randomUUID().toString();
         String fileName = uuidFile + "_" + file.getOriginalFilename();
 
@@ -36,9 +36,9 @@ public class ImageServiceImpl implements ImageService {
         Path filePath = Paths.get(pathDir + "/" + fileName);
         if (!Files.exists(filePath)) Files.createFile(filePath);
 
-        try(OutputStream outputStream = Files.newOutputStream(filePath)){
+        try (OutputStream outputStream = Files.newOutputStream(filePath)) {
             outputStream.write(file.getBytes());
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -46,29 +46,29 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ResponseEntity<?> downloadFile(String fileName, String subDir, MediaType mediaType){
-        try{
+    public ResponseEntity<?> downloadFile(String fileName, String subDir, MediaType mediaType) {
+        try {
             byte[] image = Files.readAllBytes(Paths.get("data/" + subDir + "/" + fileName));
 
             Resource resource = new ByteArrayResource(image);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; fileName=\"" + fileName + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=\"" + fileName + "\"")
                     .contentLength(resource.contentLength())
                     .contentType(mediaType)
                     .body(resource);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Image not found");
         }
     }
 
     @Override
-    public ResponseEntity<?> getById(String fileName){
+    public ResponseEntity<?> getById(String fileName) {
         return downloadFile(fileName, "images", MediaType.IMAGE_JPEG);
     }
 
     @Override
-    public void create(ImageDto imageDto){
+    public void create(ImageDto imageDto) {
 
         String fileName = saveUploadFile(imageDto.getFile(), "images");
         System.out.println(fileName);

@@ -24,6 +24,7 @@ public class ResumeEditDto {
     @NotBlank
     @Size(min = 3, max = 100)
     private String name;
+    @NotNull
     @Positive(message = "Salary must be positive")
     private Float salary;
     private Boolean active;

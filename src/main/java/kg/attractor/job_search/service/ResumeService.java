@@ -17,7 +17,9 @@ public interface ResumeService {
 
     List<ResumeDto> getAllResumes();
 
-    ResumeDto getById(Integer id);
+    ResumeDto getById(Integer id, String email);
+
+    ResumeDto findById(Integer id);
 
     ResumeDto create(ResumeDto resumeDto, Integer applicantId);
 

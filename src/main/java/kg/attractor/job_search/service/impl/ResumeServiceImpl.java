@@ -28,13 +28,13 @@ public class ResumeServiceImpl implements ResumeService {
     private final ContactTypeRepository contactTypeRepository;
 
     @Override
-    public Page<ResumeDto> findAllResumes(Pageable page){
-        Page<Resume> resumes = resumeRepository.findAll(page);
+    public Page<ResumeDto> findAllResumes(Pageable page) {
+        Page<Resume> resumes = resumeRepository.findAllByActiveIsTrue(page);
         return resumes.map(this::convertToResumeDto);
     }
 
     @Override
-    public Page<ResumeDto> findByApplicantId(Integer applicantId, Pageable page){
+    public Page<ResumeDto> findByApplicantId(Integer applicantId, Pageable page) {
         Page<Resume> resumes = resumeRepository.findByUser_Id(applicantId, page);
         return resumes.map(this::convertToResumeDto);
     }
@@ -52,7 +52,17 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ResumeDto getById(Integer id) {
+    public ResumeDto getById(Integer id, String email) {
+        Resume resume = resumeRepository.findById(id)
+                .orElseThrow(ResumeNotFoundException::new);
+        if (!resume.getUser().getEmail().equals(email)) {
+            throw new InvalidAuthorOfResumeEditException();
+        }
+        return convertToResumeDto(resume);
+    }
+
+    @Override
+    public ResumeDto findById(Integer id) {
         Resume resume = resumeRepository.findById(id)
                 .orElseThrow(ResumeNotFoundException::new);
         return convertToResumeDto(resume);
@@ -83,8 +93,8 @@ public class ResumeServiceImpl implements ResumeService {
 
         final Resume createdResume = resumeRepository.save(resume);
 
-        if (resumeDto.getEducation() != null){
-            resumeDto.getEducation().forEach(eduDto ->{
+        if (resumeDto.getEducation() != null) {
+            resumeDto.getEducation().forEach(eduDto -> {
                 EducationInfo edu = EducationInfo.builder()
                         .resume(createdResume)
                         .institution(eduDto.getInstitution())
@@ -225,7 +235,7 @@ public class ResumeServiceImpl implements ResumeService {
                         .map(this::convertWorkExperienceToDto)
                         .collect(Collectors.toList()))
                 .contacts(resume.getContacts().stream()
-                        .map(c -> new ContactInfoDto( c.getId(), c.getContactType().getId(), c.getContactValue()))
+                        .map(c -> new ContactInfoDto(c.getId(), c.getContactType().getId(), c.getContactValue()))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -280,6 +290,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .resumeId(edu.getResume().getId())
                 .build();
     }
+
     private WorkExperienceInfoDto convertWorkExperienceToDto(WorkExperienceInfo exp) {
         return WorkExperienceInfoDto.builder()
                 .id(exp.getId())
@@ -290,6 +301,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .resumeId(exp.getResume().getId())
                 .build();
     }
+
     private ContactInfoDto convertContactToDto(ContactInfo contact) {
         return ContactInfoDto.builder()
                 .id(contact.getId())

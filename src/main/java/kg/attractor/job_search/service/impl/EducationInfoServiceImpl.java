@@ -19,7 +19,7 @@ public class EducationInfoServiceImpl implements EducationService {
     private final EducationInfoRepository educationInfoRepository;
 
     @Override
-    public EducationInfoDto create(EducationInfoDto educationInfoDto){
+    public EducationInfoDto create(EducationInfoDto educationInfoDto) {
 
         EducationInfo educationInfo = EducationInfo
                 .builder()
@@ -34,6 +34,7 @@ public class EducationInfoServiceImpl implements EducationService {
         educationInfoRepository.save(educationInfo);
         return educationInfoDto;
     }
+
     @Override
     public List<EducationInfoDto> getByResumeId(Integer resumeId) {
         List<EducationInfo> educationInfos = educationInfoRepository.findByResume_Id(resumeId);
@@ -45,7 +46,7 @@ public class EducationInfoServiceImpl implements EducationService {
         educationInfoRepository.deleteByResume_Id(id);
     }
 
-    private EducationInfoDto convertToDto(EducationInfo educationInfo){
+    private EducationInfoDto convertToDto(EducationInfo educationInfo) {
         return EducationInfoDto.builder()
                 .institution(educationInfo.getInstitution())
                 .program(educationInfo.getProgram())

@@ -19,6 +19,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Value("${spring.mail.username}")
     private String EMAIL_FROM;
+
     @Override
     public void sendEmail(String toEmail, String link) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
