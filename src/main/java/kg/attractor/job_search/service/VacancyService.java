@@ -1,6 +1,5 @@
 package kg.attractor.job_search.service;
 
-import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.VacancyDto;
 import kg.attractor.job_search.dto.VacancyUpdateDto;
 import org.springframework.data.domain.Page;
@@ -30,5 +29,5 @@ public interface VacancyService {
 
     Integer update(Integer id, VacancyDto vacancyDto);
 
-    VacancyUpdateDto getForUpdate(Integer id);
+    VacancyUpdateDto getForUpdate(Integer id, String email);
 }

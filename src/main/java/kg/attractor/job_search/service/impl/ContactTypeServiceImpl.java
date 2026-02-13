@@ -16,7 +16,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
     private final ContactTypeRepository contactTypeRepository;
 
     @Override
-    public List<ContactTypeDto> findAll(){
+    public List<ContactTypeDto> findAll() {
         List<ContactType> contactTypes = contactTypeRepository.findAll();
         List<ContactTypeDto> contactTypeDtos = new ArrayList<>();
         contactTypes.forEach(contactType -> {

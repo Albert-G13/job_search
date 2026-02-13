@@ -18,7 +18,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     private final ResumeRepository resumeRepository;
 
     @Override
-    public WorkExperienceInfoDto create(WorkExperienceInfoDto workExperienceInfoDto){
+    public WorkExperienceInfoDto create(WorkExperienceInfoDto workExperienceInfoDto) {
         WorkExperienceInfo workExperienceInfo = WorkExperienceInfo
                 .builder()
                 .companyName(workExperienceInfoDto.getPosition())
@@ -31,6 +31,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         workExperienceInfoRepository.save(workExperienceInfo);
         return convertToWorkExperienceInfoDto(workExperienceInfo);
     }
+
     @Override
     public List<WorkExperienceInfoDto> getByResumeId(Integer resumeId) {
         return workExperienceInfoRepository.findByResume_Id(resumeId).stream().map(this::convertToWorkExperienceInfoDto).toList();
@@ -41,7 +42,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         workExperienceInfoRepository.deleteByResume_Id(id);
     }
 
-    private WorkExperienceInfoDto convertToWorkExperienceInfoDto (WorkExperienceInfo workExperienceInfo){
+    private WorkExperienceInfoDto convertToWorkExperienceInfoDto(WorkExperienceInfo workExperienceInfo) {
         return WorkExperienceInfoDto.builder()
                 .companyName(workExperienceInfo.getCompanyName())
                 .position(workExperienceInfo.getPosition())

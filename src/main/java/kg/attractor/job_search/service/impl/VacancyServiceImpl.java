@@ -31,21 +31,21 @@ public class VacancyServiceImpl implements VacancyService {
     private final UserRepository userRepository;
 
     @Override
-    public Page<VacancyDto> findByAuthorId(Integer authorId, Pageable page){
+    public Page<VacancyDto> findByAuthorId(Integer authorId, Pageable page) {
         Page<Vacancy> vacancies = vacancyRepository.findByUser_Id(authorId, page);
         return vacancies.map(this::convertToVacancyDto);
     }
 
     @Override
-    public Page<VacancyDto> findAllVacancies(Pageable page){
+    public Page<VacancyDto> findAllVacancies(Pageable page) {
         Sort sort = page.getSort();
         Page<Vacancy> vacancies;
 
-        if (sort.getOrderFor("responds") !=null){
+        if (sort.getOrderFor("responds") != null) {
             Pageable respondPage = PageRequest.of(page.getPageNumber(), page.getPageSize());
             vacancies = vacancyRepository.findAllOrderByRespondedApplicantsCount(respondPage);
         } else {
-            vacancies = vacancyRepository.findAll(page);
+            vacancies = vacancyRepository.findAllByActiveIsTrue(page);
         }
         return vacancies.map(this::convertToVacancyDto);
     }
@@ -106,7 +106,7 @@ public class VacancyServiceImpl implements VacancyService {
         User author = userRepository.findById(authorId)
                 .orElseThrow(UserNotFoundException::new);
 
-        if (!"EMPLOYER".equals(author.getRole().getRole())){
+        if (!"EMPLOYER".equals(author.getRole().getRole())) {
             throw new InvalidRoleEmployerException();
         }
 
@@ -148,9 +148,13 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public VacancyUpdateDto getForUpdate(Integer id) {
+    public VacancyUpdateDto getForUpdate(Integer id, String email) {
         Vacancy vacancy = vacancyRepository.findById(id)
                 .orElseThrow(VacancyNotFoundException::new);
+
+        if (!vacancy.getUser().getEmail().equals(email)) {
+            throw new InvalidAuthorOfVacancyEditException();
+        }
 
         return VacancyUpdateDto.builder()
                 .id(vacancy.getId())
@@ -164,7 +168,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .build();
     }
 
-    private VacancyDto convertToVacancyDto (Vacancy vacancy){
+    private VacancyDto convertToVacancyDto(Vacancy vacancy) {
         return VacancyDto.builder()
                 .id(vacancy.getId())
                 .categoryId(vacancy.getCategory().getId())
@@ -179,6 +183,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .updateTime(vacancy.getUpdateTime())
                 .build();
     }
+
     private Integer getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {

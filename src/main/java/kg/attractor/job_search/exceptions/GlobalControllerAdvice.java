@@ -14,6 +14,27 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
 
+    @ExceptionHandler(InvalidUserException.class)
+    public String invalidAuthorOfVacancy(Model model, InvalidUserException e){
+        model.addAttribute("status", HttpStatus.FORBIDDEN.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
+
+    @ExceptionHandler(InvalidAuthorOfResumeEditException.class)
+    public String invalidAuthorOfVacancy(Model model, InvalidAuthorOfResumeEditException e){
+        model.addAttribute("status", HttpStatus.FORBIDDEN.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
+
+    @ExceptionHandler(InvalidAuthorOfVacancyEditException.class)
+    public String invalidAuthorOfVacancy(Model model, InvalidAuthorOfVacancyEditException e){
+        model.addAttribute("status", HttpStatus.FORBIDDEN.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     public String notFound(Model model, HttpServletRequest request){
         model.addAttribute("status", HttpStatus.NOT_FOUND.value());

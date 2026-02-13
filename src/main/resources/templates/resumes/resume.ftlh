@@ -1,13 +1,13 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
+<@main.layout ; spring>
     <div class="row">
         <#list resumes.getContent() as resume>
             <div class="card col-3 m-3" style="width: 100%;">
-                <a href="#" class="text-reset text-decoration-none">
+                <a href="/resumes/${resume.id}" class="text-reset text-decoration-none"">
                     <div class="card-body">
                         <h5 class="card-title">${resume.name}</h5>
                         <h6 class="card-subtitle mb-2 text-body-secondary">${resume.salary}$</h6>
-                        <p class="card-text">Дата обновления: ${resume.updateTime.toLocalDate()}</p>
+                        <p class="card-text"><@spring.message "resumes.resume.updatedDate"/>: ${resume.updateTime.toLocalDate()}</p>
                     </div>
                 </a>
             </div>
@@ -22,11 +22,11 @@
             </#if>
 
             <li class="page-item ${resumes.isFirst()?string('disabled', '')}">
-                <a class="page-link" href="${url}&page=0">« Первая</a>
+                <a class="page-link" href="${url}&page=0">« <@spring.message "users.profile.button.first"/></a>
             </li>
 
             <li class="page-item ${resumes.hasPrevious()?string('', 'disabled')}">
-                <a class="page-link" href="${url}&page=${resumes.number - 1}">Назад</a>
+                <a class="page-link" href="${url}&page=${resumes.number - 1}"><@spring.message "users.profile.button.back"/></a>
             </li>
 
             <#assign current = resumes.number>
@@ -41,11 +41,11 @@
             </#list>
 
             <li class="page-item ${resumes.hasNext()?string('', 'disabled')}">
-                <a class="page-link" href="${url}&page=${resumes.number + 1}">Вперед</a>
+                <a class="page-link" href="${url}&page=${resumes.number + 1}"><@spring.message "users.profile.button.next"/></a>
             </li>
 
             <li class="page-item ${resumes.isLast()?string('disabled', '')}">
-                <a class="page-link" href="${url}&page=${resumes.totalPages - 1}">Последняя »</a>
+                <a class="page-link" href="${url}&page=${resumes.totalPages - 1}"><@spring.message "users.profile.button.last"/> »</a>
             </li>
 
         </ul>

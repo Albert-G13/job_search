@@ -1,11 +1,13 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
+<@main.layout ; spring>
     <div class="d-flex justify-content-start mb-4">
         <form method="get" class="d-flex gap-2">
             <select name="sort" onchange="this.form.submit()" class="form-select w-auto">
                 <#assign s = RequestParameters.sort!"" >
-                <option value="createdDate,desc" ${(s == "createdDate,desc")?string('selected','')}>По дате публикации (сначала новые)</option>
-                <option value="responds,desc" ${(s == "responds,desc")?string('selected','')}>По количеству откликов (по убыванию)</option>
+                <option value="createdDate,desc" ${(s == "createdDate,desc")?string('selected','')}><@spring.message "vacancies.index.sort.createDate"/>
+                </option>
+                <option value="responds,desc" ${(s == "responds,desc")?string('selected','')}><@spring.message "vacancies.index.sort.respondsCount"/>
+                </option>
             </select>
             <input type="hidden" name="size" value="3">
         </form>
@@ -13,12 +15,12 @@
     <div class="row">
         <#list vacancies.getContent() as vacancy>
             <div class="card col-3 m-3" style="width: 100%;">
-                <a href="#" class="text-reset text-decoration-none">
+                <a href="/vacancies/${vacancy.id}" class="text-reset text-decoration-none">
                     <div class="card-body">
                         <h5 class="card-title">${vacancy.name}</h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">Зарплата: ${vacancy.salary}$</h6>
-                        <p class="card-text">Описание: ${vacancy.description}</p>
-                        <p class="card-text">Дата публикации: ${vacancy.createdDate.toLocalDate()}</p>
+                        <h6 class="card-subtitle mb-2 text-body-secondary"><@spring.message"vacancies.index.body.salary"/>: ${vacancy.salary}$</h6>
+                        <p class="card-text"><@spring.message"vacancies.index.body.description"/>: ${vacancy.description}</p>
+                        <p class="card-text"><@spring.message"vacancies.index.body.postDate"/>: ${vacancy.createdDate.toLocalDate()}</p>
                     </div>
                 </a>
             </div>
@@ -33,11 +35,11 @@
             </#if>
 
             <li class="page-item ${vacancies.isFirst()?string('disabled', '')}">
-                <a class="page-link" href="${url}&page=0">« Первая</a>
+                <a class="page-link" href="${url}&page=0">« <@spring.message"vacancies.index.button.first"/></a>
             </li>
 
             <li class="page-item ${vacancies.hasPrevious()?string('', 'disabled')}">
-                <a class="page-link" href="${url}&page=${vacancies.number - 1}">Назад</a>
+                <a class="page-link" href="${url}&page=${vacancies.number - 1}"><@spring.message"vacancies.index.button.back"/></a>
             </li>
 
             <#assign current = vacancies.number>
@@ -52,11 +54,11 @@
             </#list>
 
             <li class="page-item ${vacancies.hasNext()?string('', 'disabled')}">
-                <a class="page-link" href="${url}&page=${vacancies.number + 1}">Вперед</a>
+                <a class="page-link" href="${url}&page=${vacancies.number + 1}"><@spring.message"vacancies.index.button.next"/></a>
             </li>
 
             <li class="page-item ${vacancies.isLast()?string('disabled', '')}">
-                <a class="page-link" href="${url}&page=${vacancies.totalPages - 1}">Последняя »</a>
+                <a class="page-link" href="${url}&page=${vacancies.totalPages - 1}"><@spring.message"vacancies.index.button.last"/> »</a>
             </li>
 
         </ul>

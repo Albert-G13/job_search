@@ -2,6 +2,7 @@ package kg.attractor.job_search.service.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import kg.attractor.job_search.common.Utilities;
 import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.UserEditDto;
@@ -33,12 +34,25 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final EmailService emailService;
 
+    @Override
+    @Transactional
+    public void updateLanguage(String email, String lang) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+        user.setLanguage(lang);
+        userRepository.save(user);
+    }
 
     @Override
     public UserDto findUserById(Integer id) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
         return convertUserToDto(user);
+    }
+
+    @Override
+    public UserDto findUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(this::convertUserToDto).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
@@ -70,6 +84,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean existsByPhoneNumber(String number) {
+        return userRepository.existsByPhoneNumber(number);
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
@@ -87,9 +106,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEditDto getUserEditById(Integer id) {
+    public UserEditDto getUserEditById(Integer id, String email) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+        if (!user.getEmail().equals(email)) {
+            throw new InvalidUserException();
+        }
         return UserEditDto.builder()
                 .name(user.getName())
                 .surname(user.getSurname())
@@ -114,10 +136,10 @@ public class UserServiceImpl implements UserService {
             user.setPhoneNumber(userEditDto.getPhoneNumber());
         }
         if (userEditDto.getAge() != null) {
-                    user.setAge(userEditDto.getAge());
+            user.setAge(userEditDto.getAge());
         }
         if (userEditDto.getAvatar() != null) {
-                    user.setAvatar(userEditDto.getAvatar());
+            user.setAvatar(userEditDto.getAvatar());
         }
         userRepository.saveAndFlush(user);
     }
@@ -151,24 +173,31 @@ public class UserServiceImpl implements UserService {
         emailService.sendEmail(email, resetPasswordLink);
     }
 
-    private void updateResetPasswordToken(String token, String email){
+    private void updateResetPasswordToken(String token, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
         user.setResetPasswordToken(token);
         userRepository.saveAndFlush(user);
     }
+
     @Override
-    public User getByResetPasswordToken(String token){
+    public User getByResetPasswordToken(String token) {
         return userRepository.findByResetPasswordToken(token)
                 .orElseThrow(UserNotFoundException::new);
     }
+
     @Override
-    public void updatePassword(User user, String newPassword){
+    public void updatePassword(User user, String newPassword) {
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
         user.setResetPasswordToken(null);
         userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public String getLanguageByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new).getLanguage();
     }
 
     public UserDto convertUserToDto(User user) {

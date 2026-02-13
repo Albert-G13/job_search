@@ -16,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -27,16 +29,18 @@ public class UserController {
     private final ResumeService resumeService;
 
     @GetMapping("{id}/profile")
-    public String profile(Model model, @PathVariable Integer id,@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 4) Pageable page){
-        model.addAttribute("userDto", userService.getUserEditById(id));
+    public String profile(Model model, @PathVariable Integer id, @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 4) Pageable page, Principal principal) {
+        String email = principal.getName();
+        model.addAttribute("userDto", userService.getUserEditById(id, email));
         model.addAttribute("vacancies", vacancyService.findByAuthorId(id, page));
         model.addAttribute("resumes", resumeService.findByApplicantId(id, page));
         return "users/profile";
     }
 
     @GetMapping("/{id}/edit")
-    public String editProfile(Model model, @PathVariable Integer id) {
-        model.addAttribute("userDto", userService.getUserEditById(id));
+    public String editProfile(Model model, @PathVariable Integer id, Principal principal) {
+        String email = principal.getName();
+        model.addAttribute("userDto", userService.getUserEditById(id, email));
         return "users/editProfile";
     }
 

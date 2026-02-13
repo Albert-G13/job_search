@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 032
+      author: Albert G.
+      changes:
+        - addColumn:
+            tableName: users_table
+            columns:
+              - column:
+                  name: language
+                  type: varchar(50)
+                  defaultValue: 'en'

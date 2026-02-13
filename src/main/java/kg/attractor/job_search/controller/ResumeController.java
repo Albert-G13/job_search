@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/resumes")
 @RequiredArgsConstructor
@@ -21,9 +23,15 @@ public class ResumeController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public String getResumes(@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 4) Pageable page, Model model){
+    public String getResumes(@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 4) Pageable page, Model model) {
         model.addAttribute("resumes", resumeService.findAllResumes(page));
         return "resumes/resume";
+    }
+
+    @GetMapping("/{id}")
+    public String getResumeInfo(@PathVariable Integer id, Model model) {
+        model.addAttribute("resume", resumeService.findById(id));
+        return "resumes/info";
     }
 
     @GetMapping("/create/{applicantId}")
@@ -40,7 +48,7 @@ public class ResumeController {
     @PostMapping("/create/{applicantId}")
     public String createPost(@Valid @ModelAttribute("resume") ResumeDto dto, BindingResult bindingResult, @PathVariable Integer applicantId, Model model) {
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
 
             model.addAttribute("applicantId", applicantId);
             model.addAttribute("education", new EducationInfoDto());
@@ -56,8 +64,10 @@ public class ResumeController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editGet(@PathVariable Integer id, Model model) {
-        ResumeDto resume = resumeService.getById(id);
+    public String editGet(@PathVariable Integer id, Model model, Principal principal) {
+        String email = principal.getName();
+
+        ResumeDto resume = resumeService.getById(id, email);
 
         model.addAttribute("resume", resume);
         model.addAttribute("education", new EducationInfoDto());
@@ -85,8 +95,8 @@ public class ResumeController {
     }
 
     @PostMapping("/{id}/update")
-    public String update(@PathVariable Integer id, ResumeDto resumeDto){
+    public String update(@PathVariable Integer id, ResumeDto resumeDto) {
         Integer userId = resumeService.update(id, resumeDto);
-        return "redirect:/users/" +  userId + "/profile";
+        return "redirect:/users/" + userId + "/profile";
     }
 }

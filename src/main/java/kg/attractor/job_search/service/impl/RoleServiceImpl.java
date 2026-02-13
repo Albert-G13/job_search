@@ -15,8 +15,9 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+
     @Override
-    public List<RoleDto> findAll(){
+    public List<RoleDto> findAll() {
         List<Role> roles = roleRepository.findAll();
         List<RoleDto> roleDtos = new ArrayList<>();
         roles.forEach(role -> {

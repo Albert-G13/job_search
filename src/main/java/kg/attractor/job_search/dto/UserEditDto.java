@@ -15,15 +15,16 @@ public class UserEditDto {
     private String name;
     @NotBlank
     private String surname;
+    @NotNull
     @Min(value = 14, message = "Age must be at least 14")
-    @Max(value = 100, message = "Age must be less than 100")
+    @Max(value = 75, message = "Age must be less than 100")
     private Integer age;
     @NotBlank
     @Size(
             min = 12, max = 12,
-            message = "Length must be 12 digits"
+            message = "{userDto.phoneSize}"
     )
-    @Pattern(regexp = "^\\d+$", message = "Should contain only digits")
+    @Pattern(regexp = "^\\d+$", message = "{userDto.phonePattern}")
     private String phoneNumber;
     private String avatar;
 }
