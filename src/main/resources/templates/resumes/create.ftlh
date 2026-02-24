@@ -34,7 +34,10 @@
             </div>
 
             <h4 class="mb-3 text-secondary"><@spring.message "resumes.info.education"/></h4>
+
             <div class="p-3 mb-3 ">
+                <button type="button" class="btn btn-success my-3" id="educationAddButton">Добавить ещё</button>
+                <div id="educationContainer"></div>
                 <div class="mb-3">
                     <label><@spring.message "resumes.edit.institution"/></label>
                     <@spring.formInput "resume.education[0].institution" 'class="form-control"' />
@@ -65,7 +68,10 @@
             </div>
 
             <h4 class="mb-3 text-secondary"><@spring.message "resumes.info.workExp"/></h4>
+
             <div class="p-3 mb-3">
+                <button type="button" class="btn btn-success  my-3" id="workExpAddButton">Добавить</button>
+                <div id="workExpContainer"></div>
                 <div class="row mb-3">
                     <div class="col-4">
                         <label><@spring.message "resumes.info.exp"/> (<@spring.message "vacancies.info.body.years"/>)</label>
@@ -116,4 +122,88 @@
             </div>
         </form>
     </div>
+
+    <script>
+
+        let addEducationButton = document.getElementById("educationAddButton");
+        let educationFormContainer = document.getElementById("educationContainer");
+
+        let addWorkExpButton = document.getElementById("workExpAddButton");
+        let workExpFormContainer = document.getElementById("workExpContainer");
+
+        let eduCounter = 0;
+        let workExpCounter = 0;
+
+        addEducationButton.addEventListener("click", () => {
+            eduCounter++;
+            console.log(eduCounter);
+            let newEduForm = document.createElement("div");
+            newEduForm.className = "mt-3 position-relative";
+            newEduForm.innerHTML = `
+                        <div class="p-3 mb-3">
+                            <div class="mb-3">
+                                <label>Учебное заведение</label>
+                                <input type="text" name="education[` + eduCounter + `].institution" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label>Программа обучения</label>
+                                <input type="text" name="education[` + eduCounter + `].program" class="form-control">
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label>Дата начала</label>
+                                    <input type="date" name="education[` + eduCounter + `].startDate" class="form-control">
+                                </div>
+                                <div class="col">
+                                    <label>Дата окончания</label>
+                                    <input type="date" name="education[` + eduCounter + `].endDate" class="form-control">
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label>Степень</label>
+                                <input type="text" name="education[` + eduCounter + `].degree" class="form-control">
+                            </div>
+                        <button type="button" class="btn-close remove-button position-absolute end-0 top-0 m-2" aria-label="Close"></button>
+                        </div>
+                        `;
+            educationFormContainer.appendChild(newEduForm);
+            newEduForm.querySelector(".remove-button").addEventListener("click", () =>{
+                educationFormContainer.removeChild(newEduForm)
+            });
+        });
+
+        addWorkExpButton.addEventListener("click", () => {
+            workExpCounter++;
+            console.log(workExpCounter);
+            let newWorkExpForm = document.createElement("div");
+            newWorkExpForm.className = "mt-3 position-relative";
+            newWorkExpForm.innerHTML = `
+                        <div class="p-3 mb-3">
+                            <div class="row mb-3">
+                                <div class="col-4">
+                                    <label>Опыт работы (лет)</label>
+                                    <input type="number" name="workExperience[` + workExpCounter + `].years" class="form-control">
+                                </div>
+                                <div class="col-8">
+                                    <label>Компания</label>
+                                    <input type="text" name="workExperience[` + workExpCounter + `].companyName" class="form-control">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Должность</label>
+                                <input type="text" name="workExperience[` + workExpCounter + `].position" class="form-control">
+                            </div>
+                            <div class="mb-2">
+                                <label>Обязанности</label>
+                                <textarea name="workExperience[` + workExpCounter + `].responsibilities" class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn-close remove-button position-absolute end-0 top-0 m-2" aria-label="Close"></button>
+                        </div>
+                        `;
+            workExpFormContainer.appendChild(newWorkExpForm);
+            newWorkExpForm.querySelector(".remove-button").addEventListener("click", () =>{
+                workExpFormContainer.removeChild(newWorkExpForm)
+            });
+        });
+    </script>
 </@main.layout>
