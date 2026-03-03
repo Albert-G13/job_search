@@ -48,17 +48,20 @@ public class GlobalControllerAdvice {
         model.addAttribute("reason", e.getMessage());
         return "errors/error";
     }
-
     @ExceptionHandler(InvalidRoleApplicantException.class)
     public String invalidRoleApplicant(Model model, InvalidRoleApplicantException e){
         model.addAttribute("status", HttpStatus.FORBIDDEN.value());
         model.addAttribute("reason", e.getMessage());
         return "errors/error";
     }
-
-
     @ExceptionHandler(WorkExperienceDateException.class)
     public String workExperienceDate(WorkExperienceDateException e,Model model){
+        model.addAttribute("status", HttpStatus.CONFLICT.value());
+        model.addAttribute("reason", e.getMessage());
+        return "errors/error";
+    }
+    @ExceptionHandler(InvalidWorkExperienceAgeException.class)
+    public String workExperienceAge(InvalidWorkExperienceAgeException e,Model model){
         model.addAttribute("status", HttpStatus.CONFLICT.value());
         model.addAttribute("reason", e.getMessage());
         return "errors/error";

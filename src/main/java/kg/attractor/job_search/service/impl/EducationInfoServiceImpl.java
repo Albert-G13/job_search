@@ -1,6 +1,7 @@
 package kg.attractor.job_search.service.impl;
 
 import kg.attractor.job_search.dto.EducationInfoDto;
+import kg.attractor.job_search.exceptions.EndDateIsAfterNowException;
 import kg.attractor.job_search.exceptions.ResumeNotFoundException;
 import kg.attractor.job_search.model.EducationInfo;
 import kg.attractor.job_search.repository.EducationInfoRepository;
@@ -20,6 +21,10 @@ public class EducationInfoServiceImpl implements EducationService {
 
     @Override
     public EducationInfoDto create(EducationInfoDto educationInfoDto) {
+
+        if (educationInfoDto.getEndDate().isAfter(LocalDate.now())){
+            throw new EndDateIsAfterNowException();
+        }
 
         EducationInfo educationInfo = EducationInfo
                 .builder()

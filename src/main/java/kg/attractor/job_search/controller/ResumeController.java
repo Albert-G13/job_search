@@ -2,6 +2,9 @@ package kg.attractor.job_search.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.*;
+import kg.attractor.job_search.exceptions.EndDateIsAfterNowException;
+import kg.attractor.job_search.exceptions.InvalidWorkExperienceAgeException;
+import kg.attractor.job_search.exceptions.WorkExperienceDateException;
 import kg.attractor.job_search.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -58,9 +61,13 @@ public class ResumeController {
 
             return "resumes/create";
         }
-
-        resumeService.create(dto, applicantId);
-        return "redirect:/resumes";
+        try {
+            resumeService.create(dto, applicantId);
+            return "redirect:/resumes";
+        } catch (InvalidWorkExperienceAgeException | EndDateIsAfterNowException e) {
+            model.addAttribute("error", e.getMessage());
+            return "resumes/create";
+        }
     }
 
     @GetMapping("/{id}/edit")
