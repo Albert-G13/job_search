@@ -27,4 +27,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findRespondedApplicantsByVacancyId(Integer vacancyId);
 
     Optional<User> findByResetPasswordToken(String token);
+
+    @Query("select u from User u " +
+            "join Resume r on r.user.id = u.id " +
+            "where r.id = :resumeId")
+    Optional<User> findByResumeId(Integer resumeId);
 }

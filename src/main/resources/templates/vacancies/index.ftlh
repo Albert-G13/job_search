@@ -1,8 +1,8 @@
 <#import "../layout.ftlh" as main>
 <@main.layout ; spring>
     <div class="d-flex justify-content-start mb-4">
-        <form method="get" class="d-flex gap-2">
-            <select name="sort" onchange="this.form.submit()" class="form-select w-auto">
+        <form method="get" class="d-flex gap-2" id="sort">
+            <select name="sort" class="form-select w-auto">
                 <#assign s = RequestParameters.sort!"" >
                 <option value="createdDate,desc" ${(s == "createdDate,desc")?string('selected','')}><@spring.message "vacancies.index.sort.createDate"/>
                 </option>
@@ -63,4 +63,5 @@
 
         </ul>
     </nav>
+    <script src="/static/js/main.js"></script>
 </@main.layout>
