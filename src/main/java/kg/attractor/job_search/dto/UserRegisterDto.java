@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserRegisterDto {
     @NotBlank
+    private String name;
+    @NotBlank
     @Email
     private String email;
     @NotBlank

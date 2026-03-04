@@ -25,7 +25,7 @@
                             <#else>
                                 <h2 class="mt-3"><@spring.message "users.profile.unknown"/> <@spring.message "users.profile.unknown"/></h2>
                             </#if>
-                            <#if (userDto.age??)>
+                            <#if (userDto.age?? && userDto.age != 0)>
                                 <h4 class="mt-3"><@spring.message "users.profile.age"/>: ${userDto.age}</h4>
                             <#else>
                                 <h4 class="mt-3"><@spring.message "users.profile.age"/>: <@spring.message "users.profile.unknown"/></h4>
