@@ -16,8 +16,6 @@ public class UserEditDto {
     @NotBlank
     private String surname;
     @NotNull
-    @Min(value = 14, message = "Age must be at least 14")
-    @Max(value = 75, message = "Age must be less than 100")
     private Integer age;
     @NotBlank
     @Size(

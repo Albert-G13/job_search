@@ -7,6 +7,11 @@
                        value="${(_csrf.token)!'csrf-token'}">
             </#if>
             <div class="mb-3">
+                <label id="usernameLabel" for="usernameInput" class="form-label"><@spring.message "users.user.name"/></label>
+                <@spring.formInput "userRegisterDto.name" 'type="text" class="form-control" id="usernameInput" name="email" aria-describedby="emailHelp"'/>
+                <@spring.showErrors "<br>" "error text-danger"/>
+            </div>
+            <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label"><@spring.message "users.user.email"/></label>
                 <@spring.formInput "userRegisterDto.email" 'type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp"'/>
                 <@spring.showErrors "<br>" "error text-danger"/>
@@ -23,7 +28,7 @@
                 <@spring.showErrors "<p>" "error text-danger"/>
             </div>
             <div class="mb-3">
-                <select name="roleId" class="form-control">
+                <select id="roleSelect" name="roleId" class="form-control">
                     <option value=""><@spring.message "auth.register.role"/></option>
                     <#list roles as role>
                         <option value="${role.id}"> ${role.role}</option>
@@ -35,4 +40,5 @@
             <button type="submit" class="btn btn-primary"><@spring.message "auth.register.button.register"/></button>
         </form>
     </div>
+    <script src="/static/js/main.js"></script>
 </@main.layout>

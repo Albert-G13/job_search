@@ -42,4 +42,13 @@
             <a href="/users/${user.id}/profile" class="btn btn-outline-secondary"><@spring.message "users.user.button.cancel"/></a>
         </form>
     </div>
+    <div class="d-flex justify-content-center">
+        <#if errorMessage?? || RequestParameters.error??>
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                ${errorMessage!(RequestParameters.error!"Произошла неизвестная ошибка")}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </#if>
+    </div>
 </@main.layout>

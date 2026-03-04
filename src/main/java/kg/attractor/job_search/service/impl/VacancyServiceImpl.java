@@ -168,6 +168,24 @@ public class VacancyServiceImpl implements VacancyService {
                 .build();
     }
 
+    @Override
+    public Page<VacancyDto> findByFilter(Integer categoryId, String name, Pageable page) {
+        String searchName = (name != null && !name.isBlank()) ? name : null;
+
+        boolean sortByResponds = page.getSort().getOrderFor("responds") != null;
+
+        Page<Vacancy> vacancies;
+
+        if (sortByResponds) {
+            Pageable pageWithoutSort = PageRequest.of(page.getPageNumber(), page.getPageSize());
+            vacancies = vacancyRepository.findAllOrderByRespondedCount(categoryId, searchName, pageWithoutSort);
+        } else {
+            vacancies = vacancyRepository.findVacanciesByFilter(categoryId, searchName, page);
+        }
+
+        return vacancies.map(this::convertToVacancyDto);
+    }
+
     private VacancyDto convertToVacancyDto(Vacancy vacancy) {
         return VacancyDto.builder()
                 .id(vacancy.getId())

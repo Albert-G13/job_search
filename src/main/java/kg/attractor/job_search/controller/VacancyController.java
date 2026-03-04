@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,8 +26,18 @@ public class VacancyController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public String getVacancies(@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 3) Pageable page, Model model) {
-        model.addAttribute("vacancies", vacancyService.findAllVacancies(page));
+    public String getVacancies(
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) String name,
+            @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 3) Pageable page,
+            Model model) {
+        model.addAttribute("vacancies", vacancyService.findByFilter(categoryId, name, page));
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("selectedCategory", categoryId);
+        model.addAttribute("searchName", name);
+        if (!page.getSort().isEmpty()) {
+            model.addAttribute("currentSort", page.getSort().toString().replace(": ", ","));
+        }
         return "vacancies/index";
     }
 

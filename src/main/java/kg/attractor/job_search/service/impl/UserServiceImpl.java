@@ -73,6 +73,8 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(RoleNotFoundException::new);
 
         User user = User.builder()
+                .age(0)
+                .name(userRegisterDto.getName())
                 .email(userRegisterDto.getEmail())
                 .password(passwordEncoder.encode(userRegisterDto.getPassword()))
                 .phoneNumber(userRegisterDto.getPhoneNumber())
@@ -125,6 +127,12 @@ public class UserServiceImpl implements UserService {
     public void edit(Integer id, UserEditDto userEditDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+
+        if ("APPLICANT".equals(user.getRole().getRole()) && userEditDto.getAge() != null) {
+            if (userEditDto.getAge() < 14) {
+                throw new UserAgeValidException();
+            }
+        }
 
         if (userEditDto.getName() != null) {
             user.setName(userEditDto.getName());

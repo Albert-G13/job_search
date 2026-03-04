@@ -2,6 +2,7 @@ package kg.attractor.job_search.controller;
 
 import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.UserEditDto;
+import kg.attractor.job_search.exceptions.UserAgeValidException;
 import kg.attractor.job_search.service.ImageService;
 import kg.attractor.job_search.service.ResumeService;
 import kg.attractor.job_search.service.UserService;
@@ -56,13 +57,17 @@ public class UserController {
             return "users/editProfile";
         }
 
-        if (!file.isEmpty()) {
-            String fileName = imageService.saveUploadFile(file, "images");
-            userEditDto.setAvatar(fileName);
+        try {
+            if (!file.isEmpty()) {
+                String fileName = imageService.saveUploadFile(file, "images");
+                userEditDto.setAvatar(fileName);
+            }
+            userService.edit(id, userEditDto);
+            return "redirect:/users/" + id + "/profile";
+        } catch (UserAgeValidException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "users/editProfile";
         }
-
-        userService.edit(id, userEditDto);
-        return "redirect:/users/" + id + "/profile";
     }
 
 }
