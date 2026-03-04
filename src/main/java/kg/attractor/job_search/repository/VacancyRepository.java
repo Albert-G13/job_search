@@ -24,6 +24,15 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Integer> {
             "ORDER BY COUNT(ra) DESC")
     Page<Vacancy> findAllOrderByRespondedApplicantsCount(Pageable pageable);
 
+    @Query("SELECT v FROM Vacancy v " +
+            "LEFT JOIN RespondedApplicant ra ON ra.vacancy = v " +
+            "WHERE v.active = true " +
+            "AND (:categoryId IS NULL OR v.category.id = :categoryId) " +
+            "AND (:name IS NULL OR LOWER(v.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "GROUP BY v " +
+            "ORDER BY COUNT(ra) DESC")
+    Page<Vacancy> findAllOrderByRespondedCount(Integer categoryId, String name, Pageable pageable);
+
     List<Vacancy> findAll();
 
     @Query("SELECT v FROM Vacancy v " +
@@ -37,4 +46,9 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Integer> {
     Optional<Vacancy> findById(Integer id);
 
     void deleteById(Integer id);
+
+    @Query("SELECT v FROM Vacancy v WHERE v.active = true " +
+            "AND (:categoryId IS NULL OR v.category.id = :categoryId) " +
+            "AND (:name IS NULL OR LOWER(v.name) LIKE LOWER(CONCAT('%', :name, '%')))")
+    Page<Vacancy> findVacanciesByFilter(Integer categoryId, String name, Pageable pageable);
 }

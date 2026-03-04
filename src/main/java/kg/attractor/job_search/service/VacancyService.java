@@ -30,4 +30,6 @@ public interface VacancyService {
     Integer update(Integer id, VacancyDto vacancyDto);
 
     VacancyUpdateDto getForUpdate(Integer id, String email);
+
+    Page<VacancyDto> findByFilter(Integer categoryId, String name, Pageable page);
 }
