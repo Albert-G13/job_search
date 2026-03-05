@@ -5,8 +5,10 @@ import kg.attractor.job_search.dto.*;
 import kg.attractor.job_search.exceptions.EndDateIsAfterNowException;
 import kg.attractor.job_search.exceptions.InvalidWorkExperienceAgeException;
 import kg.attractor.job_search.exceptions.WorkExperienceDateException;
+import kg.attractor.job_search.model.Resume;
 import kg.attractor.job_search.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -26,8 +28,19 @@ public class ResumeController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public String getResumes(@PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 4) Pageable page, Model model) {
-        model.addAttribute("resumes", resumeService.findAllResumes(page));
+    public String getResumes(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Long categoryId,
+            @PageableDefault(sort = "updateTime", direction = Sort.Direction.DESC, size = 4) Pageable page,
+            Model model) {
+
+        Page<Resume> resumes = resumeService.findResumesByFilters(name, categoryId, page);
+
+        model.addAttribute("resumes", resumes);
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("searchName", name);
+        model.addAttribute("selectedCategory", categoryId);
+
         return "resumes/resume";
     }
 

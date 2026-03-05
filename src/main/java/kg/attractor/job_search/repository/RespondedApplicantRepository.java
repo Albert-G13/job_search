@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface RespondedApplicantRepository extends JpaRepository<RespondedApplicant, Integer> {
     List<RespondedApplicant> findByResume_User_Id(Integer resumeUserId);
+
+    boolean existsByVacancy_IdAndResume_Id(Integer vacancyId, Integer resumeId);
 }

@@ -2,6 +2,8 @@ package kg.attractor.job_search.service;
 
 import kg.attractor.job_search.dto.ResumeDto;
 import kg.attractor.job_search.dto.ResumeEditDto;
+import kg.attractor.job_search.model.Resume;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -30,4 +32,8 @@ public interface ResumeService {
     void edit(Integer resumeId, ResumeEditDto resumeDto);
 
     Integer update(Integer id, ResumeDto resumeDto);
+
+    List<ResumeDto> findAllByApplicantId(Integer id);
+
+    Page<Resume> findResumesByFilters(String name, Long categoryId, Pageable page);
 }
