@@ -218,6 +218,21 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    public List<ResumeDto> findAllByApplicantId(Integer id) {
+        List<Resume> resumes = resumeRepository.findAllByUser_Id(id);
+
+        return resumes.stream().map(this::convertToResumeDto).toList();
+    }
+
+    @Override
+    public Page<Resume> findResumesByFilters(String name, Long categoryId, Pageable page) {
+        if ((name == null || name.isEmpty()) && categoryId == null) {
+            return resumeRepository.findAll(page);
+        }
+        return resumeRepository.searchResumes(name, categoryId, page);
+    }
+
+    @Override
     public ResumeEditDto getForUpdate(Integer id) {
         Resume resume = resumeRepository.findById(id)
                 .orElseThrow(ResumeNotFoundException::new);

@@ -1,6 +1,19 @@
 <#import "../layout.ftlh" as main>
 <@main.layout ; spring>
     <div class="container mt-5">
+        <#if RequestParameters.success??>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Вы успешно откликнулись на вакансию!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </#if>
+
+        <#if RequestParameters.alreadyResponded??>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Вы уже откликались на эту вакансию с этим резюме.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </#if>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/vacancies"><@spring.message "vacancies.info.nav.allVacancies"/></a></li>
@@ -33,6 +46,53 @@
                 <div class="mt-5 d-flex gap-2">
                     <a href="/vacancies" class="btn btn-outline-secondary btn-lg"><@spring.message "vacancies.info.button.backToList"/></a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 d-flex gap-2">
+        <a href="/vacancies" class="btn btn-outline-secondary btn-lg"><@spring.message "vacancies.info.button.backToList"/></a>
+
+        <#if user?? && user.role.role == "APPLICANT">
+            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#respondModal">
+                <@spring.message "vacancies.info.button.respond"/>
+            </button>
+        </#if>
+    </div>
+
+    <div class="modal fade" id="respondModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Выберите резюме для отклика</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/responses/apply" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="vacancyId" value="${vacancy.id}">
+                        <#if _csrf??>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                        </#if>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ваши резюме:</label>
+                            <select name="resumeId" class="form-select" required>
+                                <#if myResumes?? && (myResumes?size > 0)>
+                                    <#list myResumes as resume>
+                                        <option value="${resume.id}">${resume.name}</option>
+                                    </#list>
+                                <#else>
+                                    <option value="" disabled>У вас пока нет резюме</option>
+                                </#if>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" <#if !(myResumes?? && (myResumes?size > 0))>disabled</#if>>
+                            Откликнуться
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

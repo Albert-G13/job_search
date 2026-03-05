@@ -1,10 +1,13 @@
 package kg.attractor.job_search.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.job_search.dto.UserDto;
 import kg.attractor.job_search.dto.VacancyDto;
 import kg.attractor.job_search.dto.VacancyUpdateDto;
 import kg.attractor.job_search.exceptions.WorkExperienceDateException;
 import kg.attractor.job_search.service.CategoryService;
+import kg.attractor.job_search.service.ResumeService;
+import kg.attractor.job_search.service.UserService;
 import kg.attractor.job_search.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +27,8 @@ public class VacancyController {
 
     private final VacancyService vacancyService;
     private final CategoryService categoryService;
+    private final UserService userService;
+    private final ResumeService resumeService;
 
     @GetMapping
     public String getVacancies(
@@ -42,8 +47,17 @@ public class VacancyController {
     }
 
     @GetMapping("/{id}")
-    public String getVacancyInfo(@PathVariable Integer id, Model model) {
+    public String getVacancyInfo(@PathVariable Integer id, Model model, Principal principal) {
         model.addAttribute("vacancy", vacancyService.getById(id));
+
+        if (principal != null) {
+            UserDto user = userService.findUserByEmail(principal.getName());
+
+            if ("APPLICANT".equals(user.getRole())) {
+                model.addAttribute("myResumes", resumeService.findAllByApplicantId(user.getId()));
+            }
+        }
+
         return "vacancies/info";
     }
 
