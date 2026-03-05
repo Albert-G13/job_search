@@ -3,6 +3,7 @@ package kg.attractor.job_search.controller;
 import jakarta.validation.Valid;
 import kg.attractor.job_search.dto.UserEditDto;
 import kg.attractor.job_search.exceptions.UserAgeValidException;
+import kg.attractor.job_search.exceptions.UserSurnameValidException;
 import kg.attractor.job_search.service.ImageService;
 import kg.attractor.job_search.service.ResumeService;
 import kg.attractor.job_search.service.UserService;
@@ -50,11 +51,20 @@ public class UserController {
                               @Valid @ModelAttribute("userDto") UserEditDto userEditDto,
                               BindingResult bindingResult,
                               Model model,
-                              @RequestParam("file") MultipartFile file) {
+                              @RequestParam("file") MultipartFile file,
+                              @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 4) Pageable page,
+                              Principal principal) {
 
         if (bindingResult.hasErrors()) {
+            String email = principal.getName();
+            var currentUser = userService.getUserEditById(id, email);
+            if (userEditDto.getAvatar() == null) {
+                userEditDto.setAvatar(currentUser.getAvatar());
+            }
             model.addAttribute("userDto", userEditDto);
-            return "users/editProfile";
+            model.addAttribute("vacancies", vacancyService.findByAuthorId(id, page));
+            model.addAttribute("resumes", resumeService.findByApplicantId(id, page));
+            return "users/profile";
         }
 
         try {
@@ -64,10 +74,11 @@ public class UserController {
             }
             userService.edit(id, userEditDto);
             return "redirect:/users/" + id + "/profile";
-        } catch (UserAgeValidException e) {
+        } catch (UserAgeValidException | UserSurnameValidException e) {
+            model.addAttribute("vacancies", vacancyService.findByAuthorId(id, page));
+            model.addAttribute("resumes", resumeService.findByApplicantId(id, page));
             model.addAttribute("errorMessage", e.getMessage());
-            return "users/editProfile";
+            return "users/profile";
         }
     }
-
 }

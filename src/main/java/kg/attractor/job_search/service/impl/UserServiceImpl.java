@@ -128,7 +128,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
 
-        if ("APPLICANT".equals(user.getRole().getRole()) && userEditDto.getAge() != null) {
+        if ("APPLICANT".equals(user.getRole().getRole()))  {
+            if (userEditDto.getSurname() == null || userEditDto.getSurname().isBlank()){
+                throw new UserSurnameValidException();
+            }
             if (userEditDto.getAge() < 14) {
                 throw new UserAgeValidException();
             }

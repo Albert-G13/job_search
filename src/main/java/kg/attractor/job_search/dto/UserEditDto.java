@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class UserEditDto {
     @NotBlank
     private String name;
-    @NotBlank
     private String surname;
     @NotNull
     private Integer age;
