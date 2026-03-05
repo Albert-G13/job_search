@@ -30,8 +30,9 @@
                             <#else>
                                 <h4 class="mt-3"><@spring.message "users.profile.age"/>: <@spring.message "users.profile.unknown"/></h4>
                             </#if>
-                            <a href="/users/${user.id}/edit" data-mdb-button-init data-mdb-ripple-init
-                               class="btn btn-primary btn-block mb-4 mt-3"><@spring.message "users.profile.button.edit"/></a>
+                            <button type="button" class="btn btn-primary btn-block mb-4 mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                <@spring.message "users.profile.button.edit"/>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -220,4 +221,64 @@
             <h1><@spring.message "users.profile.userNotFound"/></h1>
         </#if>
     </div>
+
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel"><@spring.message "users.profile.button.edit"/></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/users/${user.id}/edit" method="post" enctype="multipart/form-data">
+                    <div class="modal-body text-start">
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}">
+                        </#if>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label"><@spring.message "users.user.name"/></label>
+                            <@spring.formInput "userDto.name" 'class="form-control" id="name"' />
+                            <@spring.showErrors "<br>" "text-danger small"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label"><@spring.message "users.user.surname"/></label>
+                            <@spring.formInput "userDto.surname" 'class="form-control" id="surname"' />
+                            <@spring.showErrors "<br>" "text-danger small"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="age" class="form-label"><@spring.message "users.user.age"/></label>
+                            <@spring.formInput "userDto.age" 'type="number" class="form-control" id="age"' />
+                            <@spring.showErrors "<br>" "text-danger small"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label"><@spring.message "users.user.phone"/></label>
+                            <@spring.formInput "userDto.phoneNumber" 'class="form-control" id="phoneNumber"' />
+                            <@spring.showErrors "<br>" "text-danger small"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><@spring.message "users.user.avatar"/></label>
+                            <input type="file" name="file" class="form-control" accept="image/*">
+                        </div>
+
+                        <#if errorMessage??>
+                            <div class="alert alert-danger">${errorMessage}</div>
+                        </#if>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><@spring.message "users.user.button.cancel"/></button>
+                        <button type="submit" class="btn btn-primary"><@spring.message "users.user.button.save"/></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <#if bindingResult?? && bindingResult.hasErrors() || errorMessage??>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var myModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+                myModal.show();
+            });
+        </script>
+    </#if>
 </@main.layout>
